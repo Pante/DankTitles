@@ -1,0 +1,22 @@
+main: com.pante.danktitles.DankTitles
+version: 0.0.1
+description: Create dank titles for the players
+author: PanteLegacy
+softdepend: [vault]
+commands:
+    danktitles:
+        description: Use this command to check the version number and reload the plugin.
+        usage: /<command> [<reload|version>]
+        aliases: [dt]
+    addtitle:
+        description: Use this command to give a title to a player.
+        usage: /<command> <player> <title>
+        aliases: [addtitles]
+    removetitle:
+        description: Use this command to remove a title from a player.
+        usage: /<command> <player> <title>
+        aliases: [removetitles]
+    title:
+        description: Use this command to open up a GUI menu used to select a title.
+        usage: /<command> [<player>]
+        aliases: [titles]

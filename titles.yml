@@ -1,0 +1,14 @@
+#=========================== Titles File ============================ #
+#       Use this file for add or modifying tiltes that is used        #
+#=========================== =========== ============================ #
+categories:
+
+  normal:
+    display: default
+    item: minecraft:grass
+    
+    titles:
+
+      titleID:
+        display: [Danker]
+        item: minecraft:grass

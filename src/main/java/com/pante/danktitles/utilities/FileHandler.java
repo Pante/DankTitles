@@ -19,29 +19,36 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * @author Pante
  */
 public class FileHandler {
+    // Singleton design pattern implementation
+    private static FileHandler instance = new FileHandler();
+    private FileHandler(){}
+    
+    public static File infoFile,titlesFile,playersFile;
+    
     public static FileConfiguration info;
     public static YamlConfiguration titles,players;
     
     // Method thats attempts to load a file 
-    public static void initialiseFile(FileConfiguration config, String filename) throws IOException{
+    public static File initialiseFile(FileConfiguration config, String filename) throws IOException {
         File file = new File(DankTitles.instance.getDataFolder(),filename);
         
-        if (!file.exists()){
+        if (!file.exists()) {
             
-            if (config instanceof YamlConfiguration){
+            if (config instanceof YamlConfiguration) {
                 config = YamlConfiguration.loadConfiguration(createFile(file,filename));
                 config.save(file);
             }
             else {
-                config.save(createFile(file, filename));
+                file = createFile(file, filename);
+                config.save(file);
             }
-            
         }
         else {
-            if (config instanceof YamlConfiguration){
+            if (config instanceof YamlConfiguration) {
                 config = YamlConfiguration.loadConfiguration(file);
             }   
         }
+        return file;
     }
     
     //Helper method for initialiseYamlFile which creates a file if it cannot be found
@@ -59,24 +66,22 @@ public class FileHandler {
             }
             
         } finally {
-            if (inputStream != null){
+            if (inputStream != null) {
                 inputStream.close();
             }
-            if (outputStream != null){
+            if (outputStream != null) {
                 outputStream.close();
             }
-        }
+          }
         return file;
     }
     
     
-    public static void saveConfig(){
+    // Methods for saving and loading the configs
+    public static void loadConfig() {
+        //TODO: Loadig logic for config.yml
+    }
+    public static void saveConfig() {
         //TODO: Saving logic for config.yml
-    }
-    public static void saveTitlesFile(){
-        //TODO: Saving logic for titles.yml
-    }
-    public static void savePlayersFile(){
-        //TODO: Saving logic for players.yml
     }
 }

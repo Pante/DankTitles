@@ -27,7 +27,13 @@ public class DankTitles extends JavaPlugin {
             ex.printStackTrace();
             getLogger().severe("File failed to load");
             getServer().getPluginManager().disablePlugin(this);
+            return;
         }
+        instance = this;
+    }
+
+    public DankTitles getInstance() {
+        return instance;
     }
 
     @Override

@@ -14,25 +14,28 @@ import org.bukkit.command.CommandSender;
  *
  * @author Pante
  */
-public class DankTitlesCommand extends CommandHandler {
+public class DankTitlesCommand extends CommandBase{
+
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] arguments) {
-        if (!checkPlayerPermissions(sender, "dantitles.debug")) {
-            return true;
-        }
-        if (!checkArgumentLength(sender,arguments, 0, 1)){
-            return true;
-        }
-        if (arguments.length == 0 || arguments[0].equalsIgnoreCase("Version")) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        
+        // Methods specified in CommandAPI and implemented in CommandBase
+        if (!checkPlayerPermission(sender, "danktitles.debug")) return true;
+        if (!checkArgumentLength(sender, args, 0, 1)) return true;
+        
+        
+        if (args.length == 0 || args[0].equalsIgnoreCase("version")) {
             sender.sendMessage(ChatColor.GOLD + "DankTitles version: " + getPluginManager().getPlugin("DankTitles").getDescription().getVersion());
             return true;
         }
-        if (arguments[0].equalsIgnoreCase("Reload")) {
-            sender.sendMessage(ChatColor.GOLD + "Reloading DankTitles");
-            // TODO: Reload logic here
+        else if (args[0].equalsIgnoreCase("reload")) {
+            //TODO: Reloading logic for DankTitlesCommand
             return true;
         }
-        return true;
+        else {
+            return (argumentIsInvalid(sender));
+        }
+        
     }
     
 }

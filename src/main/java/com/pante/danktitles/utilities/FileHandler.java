@@ -19,6 +19,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * @author Pante
  */
 public class FileHandler {
+    
     // Singleton design pattern implementation
     private static FileHandler instance = new FileHandler();
     private FileHandler(){}
@@ -28,7 +29,33 @@ public class FileHandler {
     public static FileConfiguration info;
     public static YamlConfiguration titles,players;
     
-    // Method thats attempts to load a file 
+    // Wrapper method which initialises all files
+    public static void initialiseAllFiles() {
+        try {
+            FileHandler.infoFile = FileHandler.initialiseFile(FileHandler.info,"info.txt");
+            FileHandler.titlesFile = FileHandler.initialiseFile(FileHandler.titles,"titles.yml");
+            FileHandler.playersFile = FileHandler.initialiseFile(FileHandler.players,"players.yml");
+            
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            DankTitles.instance.getLogger().severe("Failed to retrieve or create files ");
+            DankTitles.instance.getServer().getPluginManager().disablePlugin(DankTitles.instance);
+          }
+    }
+    
+    // Wrapper method which saves all files
+    public static void saveAllFiles() {
+        try {
+            FileHandler.titles.save(FileHandler.titlesFile);
+            FileHandler.players.save(FileHandler.playersFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            DankTitles.instance.getLogger().severe("Failed to save files: titles.yml and players.yml");
+        }
+    }
+    
+    
+    // Method which attempts to load a file 
     public static File initialiseFile(FileConfiguration config, String filename) throws IOException {
         File file = new File(DankTitles.instance.getDataFolder(),filename);
         

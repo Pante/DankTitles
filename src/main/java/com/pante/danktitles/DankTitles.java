@@ -19,23 +19,7 @@ public class DankTitles extends JavaPlugin {
     
     @Override
     public void onEnable() {
-        
-        getCommand("danktitles").setExecutor(new DankTitles());
-        getCommand("addtitles").setExecutor(new AddTitleCommand());
-        getCommand("removetitles").setExecutor(new RemoveTitleCommand());
-        getCommand("title").setExecutor(new TitleCommand());
-        
-        try {
-            
-            FileHandler.infoFile = FileHandler.initialiseFile(FileHandler.info,"info.txt");
-            FileHandler.titlesFile = FileHandler.initialiseFile(FileHandler.titles,"titles.yml");
-            FileHandler.playersFile = FileHandler.initialiseFile(FileHandler.players,"players.yml");
-            
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            getLogger().severe("Failed to retrieve or create files ");
-            getServer().getPluginManager().disablePlugin(this);
-          }
+
     }
     @Override
     public void onDisable() {
@@ -49,3 +33,20 @@ public class DankTitles extends JavaPlugin {
         instance = null;
     }
 }
+
+        
+        getCommand("danktitles").setExecutor(new DankTitles());
+        getCommand("addtitles").setExecutor(new AddTitleCommand());
+        getCommand("removetitles").setExecutor(new RemoveTitleCommand());
+        getCommand("title").setExecutor(new TitleCommand());
+        
+        try {
+            FileHandler.infoFile = FileHandler.initialiseFile(FileHandler.info,"info.txt");
+            FileHandler.titlesFile = FileHandler.initialiseFile(FileHandler.titles,"titles.yml");
+            FileHandler.playersFile = FileHandler.initialiseFile(FileHandler.players,"players.yml");
+            
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            getLogger().severe("Failed to retrieve or create files ");
+            getServer().getPluginManager().disablePlugin(this);
+          }

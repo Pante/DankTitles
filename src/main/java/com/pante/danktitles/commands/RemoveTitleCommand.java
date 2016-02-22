@@ -8,8 +8,8 @@ package com.pante.danktitles.commands;
 import com.pante.danktitles.DankTitles;
 import com.pante.danktitles.utilities.FileHandler;
 import java.io.IOException;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,37 +18,34 @@ import org.bukkit.entity.Player;
  *
  * @author Pante
  */
-public class RemoveTitleCommand extends CommandHandler {
+public class RemoveTitleCommand extends CommandBase {
+    
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!checkPlayerPermissions(sender, "danktitles.addtitle")) {
-            return true;
-        }
-        if (!checkArgumentLength(sender, args, 2, 2)) {
-            return true;
-        }
+        // TODO: Remove boilerplate code
         
-        Player target = Bukkit.getPlayer(args[0]);
-        String path = "categories."+args[1]+".titles."+args[2];
+        // Methods specified in CommandAPI and implemented in CommandBase
+        if (!checkPlayerPermission(sender, "danktitles.debug")) return true;
+        if (!checkArgumentLength(sender, args, 2, 2)) return true;
         
-        if (target != null && FileHandler.titles.contains(path)) {
-            
-            // Setting the values for the paths
-            FileHandler.players.set("players." + target.getUniqueId().toString() + ".name", target.getName());
-            FileHandler.players.set("players." + target.getUniqueId().toString() + ".titles." + args[1], null);
-            
-            // Attempts to save the players.yml file
-            try {
-                 FileHandler.players.save(FileHandler.playersFile);
-            } catch (IOException e) {
-                DankTitles.instance.getLogger().severe("Failed to save changes to players.yml");
-                e.printStackTrace();
-            }
-            
-            sender.sendMessage(ChatColor.GOLD + "Title: " + args[2] +  " has been removed " + args[0] + ".");
-            return true;
+        
+        Player player = Bukkit.getPlayer(args[0]);
+        String path = ("categories" + args[1] + ".titles." + args[2]);
+        
+        if (player == null || (!FileHandler.titles.contains(path)) ) return (argumentIsInvalid(sender));
+        
+        
+        // Removing the title and player's name to the players.yml file
+        FileHandler.players.set("players." + player.getUniqueId().toString() + ".name", player.getName());
+        FileHandler.players.set("players." + player.getUniqueId().toString() + ".titles." + args[1], null);
+        
+        try {
+            FileHandler.players.save(FileHandler.playersFile);
+        } catch (IOException | IllegalArgumentException ex ) {
+            ex.printStackTrace();
+            DankTitles.instance.getLogger().severe(ChatColor.RED + "An error has occurred while trying to save players.yml.");
         }
-        sender.sendMessage(ChatColor.RED + "Invalid argument specified.");
         return true;
     }
+    
 }

@@ -3,18 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.pante.danktitles.utilities;
+package com.karusmc.danktitles.utilities;
 
-import com.pante.danktitles.DankTitles;
-import com.pante.danktitles.commands.AddTitleCommand;
-import com.pante.danktitles.commands.RemoveTitleCommand;
-import com.pante.danktitles.commands.TitleCommand;
+import com.karusmc.danktitles.DankTitles;
+import com.karusmc.danktitles.commands.AddTitleCommand;
+import com.karusmc.danktitles.commands.RemoveTitleCommand;
+import com.karusmc.danktitles.commands.TitleCommand;
 
 /**
  *
  * @author Pante
  */
 public class CommandHandler {
+    
     // Singleton design pattern implementation
     public static CommandHandler instance = new CommandHandler();
     private CommandHandler() {};

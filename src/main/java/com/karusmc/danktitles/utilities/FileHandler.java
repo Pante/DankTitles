@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.pante.danktitles.utilities;
+package com.karusmc.danktitles.utilities;
 
-import com.pante.danktitles.DankTitles;
+import com.karusmc.danktitles.DankTitles;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;

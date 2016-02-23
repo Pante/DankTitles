@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.pante.danktitles.commands;
+package com.karusmc.danktitles.commands;
 
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -14,10 +14,17 @@ import org.bukkit.entity.Player;
  *
  * @author Pante
  */
-public abstract class CommandBase implements CommandExecutor, CommandAPI {
+public class TitleCommand extends CommandBase {
+    
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        //TODO: Open menu shit here.
+        return true;
+    }
     
     @Override
     
+    // Implementation of checkPlayerPermission so that it returns false if the sender is not a player
     // Implementation of checkPlayerPermission in CommandAPI
     public boolean checkPlayerPermission(CommandSender sender, String permission) {
  
@@ -29,29 +36,11 @@ public abstract class CommandBase implements CommandExecutor, CommandAPI {
                 return false;
             }  
             
-        } 
-        
-        return true;
-    }
-    
-    @Override
-    
-    // Implementation of checkArgumentLength
-    public boolean checkArgumentLength(CommandSender sender, String args[], int minLength, int maxLength) {
-       
-        if (args.length < minLength || args.length > maxLength) {
-            sender.sendMessage(ChatColor.RED + "Invalid number of arguments specified.");
-            return false;
+        }
+        else {
+            sender.sendMessage(ChatColor.RED + "This is a player only command");
         }
         
-        return true;
-    }
-    
-    @Override
-    
-    // Implementation of argumentIsInvalid
-    public boolean argumentIsInvalid(CommandSender sender) {
-        sender.sendMessage(ChatColor.RED + "An invalid argument(s) was specified.");
         return true;
     }
 }

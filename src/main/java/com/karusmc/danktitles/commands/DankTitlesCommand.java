@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.pante.danktitles.commands;
+package com.karusmc.danktitles.commands;
 
 import static org.bukkit.Bukkit.getPluginManager;
 import org.bukkit.ChatColor;

@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.pante.danktitles;
+package com.karusmc.danktitles;
 
-import com.pante.danktitles.utilities.CommandHandler;
-import com.pante.danktitles.utilities.FileHandler;
-import java.io.IOException;
+import com.karusmc.danktitles.utilities.CommandHandler;
+import com.karusmc.danktitles.utilities.FileHandler;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -19,6 +18,7 @@ public class DankTitles extends JavaPlugin {
     
     @Override
     public void onEnable() {
+        DankTitles.instance = this;
         FileHandler.initialiseAllFiles();
         CommandHandler.registerAllCommands();
     }

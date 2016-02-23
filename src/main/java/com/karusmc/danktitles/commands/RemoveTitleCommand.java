@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.pante.danktitles.commands;
+package com.karusmc.danktitles.commands;
 
-import com.pante.danktitles.DankTitles;
-import com.pante.danktitles.utilities.FileHandler;
+import com.karusmc.danktitles.DankTitles;
+import com.karusmc.danktitles.utilities.FileHandler;
 import java.io.IOException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

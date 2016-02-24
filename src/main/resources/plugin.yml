@@ -20,3 +20,23 @@ commands:
         description: Use this command to open up a GUI menu used to select a title.
         usage: /<command> [<player>]
         aliases: [titles]
+permissions:
+    danktitles.*:
+        description: Gives access to all danktitles commands.
+        children:
+            danktitles.debug: true
+            danktitles.addtitle: true
+            danktitles.removetitle: true
+            danktitles.title: true
+    danktitles.debug:
+        description: Allows access to reloading and checking the plugin version
+        default: op
+    danktitles.addtitle:
+        description: Allows access to giving a player a title
+        default: op
+    danktitles.removetitle:
+        description: Allows access to removing a player's title
+        default: op
+    danktitles.title:
+        description: Allows access to the title's menu
+        default: not op

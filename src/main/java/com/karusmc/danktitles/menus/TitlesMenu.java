@@ -13,83 +13,90 @@ import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  *
  * @author Pante
  */
-public class TitlesMenu extends MenuBase {
+public class TitlesMenu extends BaseMenu {
     
+    //Inherits Inventory menu, int pageSize, int currentPage & int totalPages from BaseMenu
+    String category;
     
-    // Method that opens up the menu
-    public static void openMenu(Player player, String category, Inventory menu) {
-        int pageNumber;
-        int totalPages;
+    public TitlesMenu(int page, String category) {
+        
+        if (page > 0 && page <= totalPages) {
+        this.currentPage = page;
+        }
+        this.category = category;
+        
+    }
+    
+    @Override
+    
+    // Implementation of abstract method found in BaseMenu
+    public void display(Player player) {
         
         List<String> titles = new ArrayList();
         titles.addAll((Collection<? extends String>) FileHandler.players.getList("players." + player.getUniqueId() + ".titles." + category));
         
-        // checks if menu created from a previous page
-        if (menu == null) {
+        // Inherits generateTotalPages from BaseMenu
+        totalPages = generateTotalPages(titles.size());
+        
+        if (totalPages == 1) {
             
-            pageNumber = 1;
-            totalPages = (int) (Math.ceil((double)titles.size() / 48.0));
-
+            menu = Bukkit.createInventory(null, 54, "§l§2Titles - " + category + "§r");
+            
         }
         else {
             
-            pageNumber = (int) menu.getTitle().charAt(menu.getTitle().length() - 2) + 1;
-            totalPages = (int) menu.getTitle().charAt(menu.getTitle().length());
+            menu = Bukkit.createInventory(null, 54, "§1§2Titles - " + category + " - Page " + currentPage + "§r");
+            
         }
         
-        menu = Bukkit.createInventory(null, 54, "§l§2Titles - " + category + "§r" + pageNumber + "/" + totalPages);
+        // Create the buttons
+        ItemStack previousButton= new ItemStack(Material.STAINED_CLAY, 1, (byte)DyeColor.LIME.getDyeData());
+        ItemStack resetButton = new ItemStack(Material.ANVIL);
+        ItemStack menuButton = new ItemStack(Material.EYE_OF_ENDER);
+        ItemStack nextButton= new ItemStack(Material.STAINED_CLAY, 1, (byte)DyeColor.LIME.getDyeData());
+
+        // Generates the item meta for the buttons, inheririts generateItemMeta from BaseMenu
+        previousButton = generateItemMeta(previousButton, "§l§2Previous Page§r");
+        resetButton = generateItemMeta(resetButton, "§l§4Reset Title§r");
+        menuButton = generateItemMeta(menuButton, "§l§2Main Menu§r");
+        nextButton = generateItemMeta(nextButton, "§l§2Next Page§r");
+
+        menu.setItem(46, previousButton);
+        menu.setItem(49, resetButton);
+        menu.setItem(50, menuButton);
+        menu.setItem(54, nextButton);
         
-        // Add checker to see if number is out of bounds
-        List<String> titlesDisplayed = titles.subList((pageNumber * 48 - 47), (pageNumber * 48));
         
-        for (String title : titlesDisplayed) {
+        for (String title : titles.subList(generateFirstIndex(54, currentPage), generateLastIndex(54, currentPage, titles.size()))) {
             
             ItemStack item;
+            String basePath = "categories." + category + ".titles." + title;
             
-            
-            // Checks if the item is coloured and creates the item accordingly
-            if (FileHandler.titles.contains("categories." + category + ".colour")) {
-                item = new ItemStack(Material.getMaterial(FileHandler.titles.getString("categories." + category + ".item")), 1, DyeColor.SILVER.getDyeData());
+            // Inherits parseColour from BaseMenu
+            if (FileHandler.titles.getString(basePath + ".colour").equalsIgnoreCase(null)) {
+                
+                item = new ItemStack(Material.getMaterial(FileHandler.titles.getString(basePath + ".item")), 1, 
+                        parseColour(basePath + ".colour"));
+                        
             }
             else {
-                item = new ItemStack(Material.getMaterial(FileHandler.titles.getString("categories." + category + ".item")));
+                
+                item = new ItemStack(Material.getMaterial(FileHandler.titles.getString(basePath + ".item")));
+                
             }
             
-            // Sets the display name for the item
-            ItemMeta itemMeta =item.getItemMeta();
-            itemMeta.setDisplayName(FileHandler.titles.getString("categories." + category + ".display"));
-            item.setItemMeta(itemMeta);
+            item = generateItemMeta(item, FileHandler.titles.getString(basePath + ".display"));
             
-            
-            // adds the item to the arraylist
             menu.addItem(item);
-            
+                
         }
         
-        // Using helper method to create menu items
-        menu.setItem(49, TitlesMenu.createMenuItem("§l§2Previous Page§r", Material.STAINED_CLAY, (byte)DyeColor.LIME.getDyeData()));
-        menu.setItem(52, TitlesMenu.createMenuItem("§l§4Reset title§r", Material.ANVIL, null));
-        menu.setItem(53, TitlesMenu.createMenuItem("§l§4Menu§r", Material.EYE_OF_ENDER, null));
-        menu.setItem(54, TitlesMenu.createMenuItem("§1§2Next Page§r", Material.WATER, (byte)DyeColor.LIME.getDyeData()));
-        
         player.openInventory(menu);
-    }
-    
-    
-    // Helper method that creates a menu button
-    public static ItemStack createMenuItem(String display, Material material, Byte colour) {
-        ItemStack item = new ItemStack(material, 1, colour);
-        ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.setDisplayName(display);
-        item.setItemMeta(itemMeta);
-        return item;
     }
 }

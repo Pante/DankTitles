@@ -5,10 +5,12 @@ categories:
 
   normal:
     display: default
-    item: minecraft:grass
+    item: STAINED_CLAY
+    colour: LIME
     
     titles:
 
       titleID:
         display: [Danker]
-        item: minecraft:grass
+        item: STAINED_CLAY
+        colour: LIME

@@ -1,4 +1,10 @@
 #=========================== Players File ============================ #
 #             Use this file for add or modifying players titles        #
 #=========================== ============ ============================ #
-Players:
+players:
+    player_uuid:
+        name: player_name
+        titles:
+            category_name:
+                - title_ID_1
+                - title_ID_2

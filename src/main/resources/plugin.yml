@@ -1,8 +1,7 @@
-main: com.pante.danktitles.DankTitles
+main: com.karus.danktitles.DankTitles
 version: 0.0.1
 description: Create dank titles for the players
 author: PanteLegacy
-softdepend: [vault]
 commands:
     danktitles:
         description: Use this command to check the version number and reload the plugin.

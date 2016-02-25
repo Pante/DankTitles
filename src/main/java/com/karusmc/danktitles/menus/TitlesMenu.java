@@ -5,6 +5,7 @@
  */
 package com.karusmc.danktitles.menus;
 
+import com.karusmc.danktitles.DankTitles;
 import com.karusmc.danktitles.utilities.FileHandler;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +14,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -30,7 +34,6 @@ public class TitlesMenu extends BaseMenu {
         this.currentPage = page;
         }
         this.category = category;
-        
     }
     
     @Override
@@ -56,10 +59,10 @@ public class TitlesMenu extends BaseMenu {
         }
         
         // Create the buttons
-        ItemStack previousButton= new ItemStack(Material.STAINED_CLAY, 1, (byte)DyeColor.LIME.getDyeData());
-        ItemStack resetButton = new ItemStack(Material.ANVIL);
-        ItemStack menuButton = new ItemStack(Material.EYE_OF_ENDER);
-        ItemStack nextButton= new ItemStack(Material.STAINED_CLAY, 1, (byte)DyeColor.LIME.getDyeData());
+        previousButton= new ItemStack(Material.STAINED_CLAY, 1, (byte)DyeColor.LIME.getDyeData());
+        resetButton = new ItemStack(Material.ANVIL);
+        menuButton = new ItemStack(Material.EYE_OF_ENDER);
+        nextButton= new ItemStack(Material.STAINED_CLAY, 1, (byte)DyeColor.LIME.getDyeData());
 
         // Generates the item meta for the buttons, inheririts generateItemMeta from BaseMenu
         previousButton = generateItemMeta(previousButton, "§l§2Previous Page§r");
@@ -98,5 +101,41 @@ public class TitlesMenu extends BaseMenu {
         }
         
         player.openInventory(menu);
+    }
+    
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        
+        ItemStack clicked = event.getCurrentItem(); // The item that was clicked
+        Inventory inventory = event.getInventory(); // The inventory that was clicked
+        
+        if (inventory.getTitle().equals(menu.getTitle())) {
+            
+            if (clicked.equals(previousButton)) {
+                if (currentPage > 1) {
+                    TitlesMenu newMenu = new TitlesMenu(currentPage - 1, category);
+                    newMenu.display(player);
+                }
+            }
+            else if (clicked.equals(resetButton)) {
+                 DankTitles.tempStorage.put(player, null);
+            }
+            else if (clicked.equals(menuButton)) {
+                CategoryMenu newMenu = new CategoryMenu(1);
+                newMenu.display(player);
+            }
+            else if (clicked.equals(nextButton)) {
+                if (currentPage < totalPages) {
+                    TitlesMenu newMenu = new TitlesMenu(currentPage + 1, category);
+                    newMenu.display(player);
+                }
+            }
+            else if (menu.contains(clicked)) {
+                DankTitles.tempStorage.put(player, clicked.getItemMeta().getDisplayName());
+            }
+            
+            event.setCancelled(true);
+        }
+        
     }
 }

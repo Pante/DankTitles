@@ -8,6 +8,7 @@ package com.karusmc.danktitles.menus;
 import com.karusmc.danktitles.utilities.FileHandler;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -16,15 +17,20 @@ import org.bukkit.inventory.meta.ItemMeta;
  *
  * @author Pante
  */
-public abstract class BaseMenu {
+public abstract class BaseMenu implements Listener {
     
     // Variables that keep track of the page size, current page and total pages respectively
     int pageSize;
     int currentPage;
     int totalPages;
     
-    // Variable to represent the inventory
+    // Variable to represent the inventory and buttons
     Inventory menu;
+    ItemStack previousButton;
+    ItemStack resetButton;
+    ItemStack menuButton;
+    ItemStack nextButton;
+    Player player;
     
     // Abstract method which will contain the menu's logic
     public abstract void display(Player player);
@@ -85,4 +91,5 @@ public abstract class BaseMenu {
         return item;
         
     }
+    
 }

@@ -5,6 +5,7 @@
  */
 package com.karusmc.danktitles.commands;
 
+import com.karusmc.danktitles.menus.CategoryMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -18,14 +19,20 @@ public class TitleCommand extends CommandBase {
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        //TODO: Open menu shit here.
+        if (!checkPlayerPermission(sender, "danktitles.title")) return true;
+        else {
+            CategoryMenu menu = new CategoryMenu(1);
+            Player player = (Player) sender;
+            menu.display(player);
+        }
+        
         return true;
     }
     
+    
     @Override
     
-    // Implementation of checkPlayerPermission so that it returns false if the sender is not a player
-    // Implementation of checkPlayerPermission in CommandAPI
+    // Implementation of checkPlayerPermission in CommandAPI so that it returns false if the sender is not a player
     public boolean checkPlayerPermission(CommandSender sender, String permission) {
  
         if (sender instanceof Player) {

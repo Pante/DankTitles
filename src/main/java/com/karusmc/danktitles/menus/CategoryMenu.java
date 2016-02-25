@@ -12,6 +12,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -20,7 +23,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class CategoryMenu extends BaseMenu {
     
-    //Inherits Inventory menu, int pageSize, int currentPage & int totalPages from BaseMenu
+    //Inherits int pageSize, int currentPage & int totalPages from BaseMenu
     
     public CategoryMenu(int page) {
         
@@ -34,6 +37,8 @@ public class CategoryMenu extends BaseMenu {
     
     // Implementation of abstract method found in BaseMenu
     public void display(Player player) {
+        
+        this.player = player;
         
         List<String> categories = new ArrayList();
         categories.addAll(FileHandler.titles.getConfigurationSection("categories").getKeys(false));
@@ -53,8 +58,8 @@ public class CategoryMenu extends BaseMenu {
             menu = Bukkit.createInventory(null, 54, "§1§2Titles - Categories - Page " + currentPage + "§r");
             
             // Create the buttons
-            ItemStack previousButton= new ItemStack(Material.STAINED_CLAY, 1, (byte)DyeColor.LIME.getDyeData());
-            ItemStack nextButton= new ItemStack(Material.STAINED_CLAY, 1, (byte)DyeColor.LIME.getDyeData());
+            previousButton= new ItemStack(Material.STAINED_CLAY, 1, (byte)DyeColor.LIME.getDyeData());
+            nextButton= new ItemStack(Material.STAINED_CLAY, 1, (byte)DyeColor.LIME.getDyeData());
             
             // Generates the item meta for the buttons, inheririts generateItemMeta from BaseMenu
             previousButton = generateItemMeta(previousButton, "§l§2Previous Page§r");
@@ -92,4 +97,34 @@ public class CategoryMenu extends BaseMenu {
         player.openInventory(menu);
         
     }
+    
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        
+        ItemStack clicked = event.getCurrentItem(); // The item that was clicked
+        Inventory inventory = event.getInventory(); // The inventory that was clicked
+        
+        if (inventory.getTitle().equals(menu.getTitle())) {
+            
+            if (clicked.equals(previousButton)) {
+                if (currentPage > 1) {
+                    CategoryMenu newMenu = new CategoryMenu(currentPage - 1);
+                    newMenu.display(player);
+                }
+            }
+            else if (clicked.equals(nextButton)) {
+                if (currentPage < totalPages) {
+                    CategoryMenu newMenu = new CategoryMenu(currentPage + 1);
+                    newMenu.display(player);
+                }
+            }
+            else if (menu.contains(clicked)) {
+                TitlesMenu newMenu = new TitlesMenu(1, clicked.getItemMeta().getDisplayName().replaceAll("/§?/", ""));
+            }
+            
+            event.setCancelled(true);
+        }
+        
+    }
+    
 }

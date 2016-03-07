@@ -18,6 +18,10 @@ package com.karus.danktitles;
 
 import com.karus.danktitles.backend.DataHandler;
 import com.karus.danktitles.backend.FileHandler;
+import com.karus.danktitles.commands.MainCommand;
+import com.karus.danktitles.listeners.PlayerListener;
+import com.karus.danktitles.menus.CategoryMenu;
+import com.karus.danktitles.menus.TitlesMenu;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -33,15 +37,27 @@ public class DankTitles extends JavaPlugin {
     public static Chat chat = null;
     public static Permission permission = null;
     
-    // Fields
-    private DankTitles instance;
+    private static DankTitles instance;
+    
+    // Field
     private DataHandler dataHandler;
     
     
     @Override
     public void onEnable() {
         
+        setInstance(this);
+        
+        setDataHandler(FileHandler.getInstance());
+        getDataHandler().load();
+        
         setupVault();
+        
+        DankTitles.instance.getCommand("DankTitles").setExecutor(new MainCommand());
+        
+        getServer().getPluginManager().registerEvents(new PlayerListener(),this);
+        getServer().getPluginManager().registerEvents(new CategoryMenu(),this);
+        getServer().getPluginManager().registerEvents(new TitlesMenu(), this);
         
     }
     
@@ -50,7 +66,7 @@ public class DankTitles extends JavaPlugin {
     public void onDisable() {
         
     }
-    
+   
     
     
     // <------ Method to set up Vault ------>
@@ -64,6 +80,7 @@ public class DankTitles extends JavaPlugin {
         }
     }
     
+    
     // Helper method for setupVault() that sets up Vault Chat
     private boolean setupChat() {
         
@@ -76,6 +93,7 @@ public class DankTitles extends JavaPlugin {
         return chat != null;
         
     }
+    
     
     // Helper method for setupVault() that sets up Vault Permissions
     private boolean setupPermissions() {
@@ -96,10 +114,7 @@ public class DankTitles extends JavaPlugin {
     
     
     // Getter & setter methods for DankTitles class
-    public DankTitles getInstance() {
-        if (instance == null) {
-            instance = this;
-        }
+    public static DankTitles getInstance() {
         return instance;
     }
     

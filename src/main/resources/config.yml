@@ -1,1 +1,3 @@
+# Requires vault to use
+enable-vault: true
 

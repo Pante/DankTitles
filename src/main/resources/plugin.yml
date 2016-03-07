@@ -1,41 +1,38 @@
+name: DankTitles
 main: com.karus.danktitles.DankTitles
 version: 0.0.1
-description: Create dank titles for the players
+description: Create dank titles for players
 author: PanteLegacy
+depend: [Vault]
 commands:
-    danktitles:
-        description: Use this command to check the version number and reload the plugin.
-        usage: /<command> [<reload|version>]
-        aliases: [dt]
-    addtitle:
-        description: Use this command to give a title to a player.
-        usage: /<command> <player> <title>
-        aliases: [addtitles]
-    removetitle:
-        description: Use this command to remove a title from a player.
-        usage: /<command> <player> <title>
-        aliases: [removetitles]
-    title:
-        description: Use this command to open up a GUI menu used to select a title.
-        usage: /<command> [<player>]
-        aliases: [titles]
+  danktitles:
+    description: Use this command to check the version number and reload the plugin.
+    usage: |
+      /<command> [<about|help|reload>]
+      /<command> [<add|remove>] [<category>] [<title>] [<player>]
+    aliases: [dt]
 permissions:
-    danktitles.*:
-        description: Gives access to all danktitles commands.
-        children:
-            danktitles.debug: true
-            danktitles.addtitle: true
-            danktitles.removetitle: true
-            danktitles.title: true
-    danktitles.debug:
-        description: Allows access to reloading and checking the plugin version
-        default: op
-    danktitles.addtitle:
-        description: Allows access to giving a player a title
-        default: op
-    danktitles.removetitle:
-        description: Allows access to removing a player's title
-        default: op
-    danktitles.title:
-        description: Allows access to the title's menu
-        default: not op
+  danktitles.*:
+    description: Gives access to all danktitles commands.
+    children:
+      danktitles.about: true
+      danktitles.help: true
+      danktitles.reload: true
+      danktitles.titles: true
+      danktitles.add: true
+      danktitles.remove: true
+  danktitles.about:
+    description: Allows players to view the version of the plugin
+    default: not op
+  danktitles.help:
+    description: Allows players to view a list of plugin commands
+    default: not op
+  danktitles.titles:
+    description: Allows players to open a GUI menu of all the titles they own
+    default: not op
+  danktitles.add:
+    description: Allows access to giving a player a title that is defined in titles.yml
+    default: op
+  danktitles.remove:
+    description: Allows access to removing a player's title defined in players.yml
+    default: op

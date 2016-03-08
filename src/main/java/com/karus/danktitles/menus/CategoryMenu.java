@@ -21,6 +21,7 @@ import com.karus.danktitles.backend.FileHandler;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -38,7 +39,9 @@ public class CategoryMenu extends BaseMenu {
     // Inherits int page, pageSize & pageTotal from BaseMenu
     // Inherits Inventory menu, ItemStack item & ItemMeta itemMeta
     
+    // Fields
     private FileHandler fileHandler;
+    private List<String> categories;
     
     
     public CategoryMenu() {
@@ -64,16 +67,19 @@ public class CategoryMenu extends BaseMenu {
         fileHandler = FileHandler.getInstance();
         
         
-        List<String> categories = new ArrayList();
-        categories.addAll(FileHandler.getInstance().getTitles().getConfigurationSection("categories").getKeys(false));
+        categories = new ArrayList();
+        categories.addAll(fileHandler.getTitles().getConfigurationSection("categories").getKeys(false));
         
         // Inherits generatePageSize and generatePageTotal from BaseMenu
         if (categories.isEmpty()) {
+            
             pageSize = 9;
             pageTotal = 1;
             menu = Bukkit.createInventory(null, pageSize, "§l§2Titles - Categories§r");
             player.openInventory(menu);
+            
             return;
+            
         }
         else {
             
@@ -149,37 +155,44 @@ public class CategoryMenu extends BaseMenu {
         
         
         Inventory eventMenu = event.getInventory();
-        if (!eventMenu.equals(menu)) return;
+        if (!eventMenu.getTitle().contains("§l§2Titles - Categories")) return;
+        
+        event.setCancelled(true);
         
         ItemStack clicked = event.getCurrentItem();
         
         
         // Switch statement for determining which item was clicked and their corresponding behaviour
-        switch(clicked.getItemMeta().getDisplayName()) {
+        switch(ChatColor.stripColor(clicked.getItemMeta().getDisplayName())) {
             
-            case "§l§2Previous Page§r":
+            case "Previous Page":
                 CategoryMenu previousMenu = new CategoryMenu(page + 1, pageTotal);
                 previousMenu.display((Player) event.getWhoClicked());
                 break;
             
                 
-            case "§l§2Next Page§r":
+            case "Next Page":
                 CategoryMenu nextMenu = new CategoryMenu(page - 1, pageTotal);
                 nextMenu.display((Player) event.getWhoClicked());
                 break;
                 
-            case "§l§cInvalid Title§r":
+            case "Invalid Title":
                 break;
                 
             default:
-                TitlesMenu titlesMenu = new TitlesMenu(clicked.getItemMeta().getDisplayName().replaceAll("/§?/", ""));
-                titlesMenu.display((Player) event.getWhoClicked());
+                
+                for (String category : categories.subList(generateFirstIndex(page, pageSize), generateLastIndex(page, pageSize, categories.size()))) {
+                    
+                    if (fileHandler.getTitles().getString("categories." + category + ".display").contains(category)) {
+                        TitlesMenu titlesMenu = new TitlesMenu(category);
+                        titlesMenu.display((Player) event.getWhoClicked());
+                        break;
+                    }
+                    
+                }       
                 break;
             
         }
-        Player eventPlayer = (Player) event.getWhoClicked();
-        eventPlayer.getInventory().InventoryInteract().cancel().all();
-        event.setCancelled(true);
         
     }
 }

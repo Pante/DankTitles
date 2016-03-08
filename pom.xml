@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.karus</groupId>
     <artifactId>DankTitles</artifactId>
-    <version>0.01</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     
     <properties>
@@ -51,9 +51,9 @@
         <!-- Vault API -->
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.5</version>
-            <scope>provided</scope>
+            <artifactId>Vault</artifactId>
+            <version>1.5.2</version>
+            <type>jar</type>
         </dependency>
         
     </dependencies>

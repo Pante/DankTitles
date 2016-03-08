@@ -71,7 +71,9 @@ class RemoveSubcommand extends BaseSubcommand {
         
         
         // Removing the title from players.yml
-        FileHandler.getInstance().getPlayers().getStringList(path).remove(args[2]);
+        List<String> tempList = FileHandler.getInstance().getPlayers().getStringList(path);
+        tempList.remove(args[2]);
+        FileHandler.getInstance().getPlayers().set(path, tempList);
         sender.sendMessage(ChatColor.GOLD + "Title: " + args[2] + " has been removed from player: " + args[3]);
         DankTitles.getInstance().getDataHandler().save();
         

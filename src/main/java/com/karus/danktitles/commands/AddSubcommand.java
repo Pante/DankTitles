@@ -19,6 +19,7 @@ package com.karus.danktitles.commands;
 
 import com.karus.danktitles.DankTitles;
 import com.karus.danktitles.backend.FileHandler;
+import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -42,12 +43,10 @@ class AddSubcommand extends BaseSubcommand {
         
         
         // Checks if the players and titles specified are valid
-        DankTitles.getInstance().getLogger().info("Check 1");
         Player player = Bukkit.getPlayer(args[3]);
-        DankTitles.getInstance().getLogger().info("Check 2");
         String path = ("categories." + args[1] + ".titles.");
-        DankTitles.getInstance().getLogger().info(path);
-        DankTitles.getInstance().getLogger().info("Check 3");
+        
+        
         if (player == null || !(FileHandler.getInstance().getTitles().contains(path + args[2]))) {
             
             DankTitles.getInstance().getLogger().info("Value 1" + (player == null));
@@ -65,8 +64,15 @@ class AddSubcommand extends BaseSubcommand {
             return;
         }
         
+        
         FileHandler.getInstance().getPlayers().set("players." + player.getUniqueId().toString() + ".name", player.getName());
-        FileHandler.getInstance().getPlayers().getString("players." + player.getUniqueId().toString() + ".titles." + args[1], args[2]);
+        
+        List<String> tempList = FileHandler.getInstance().getPlayers().getStringList("players." + player.getUniqueId().toString() + ".titles." + args[1]);
+        tempList.add(args[2]);
+        
+        FileHandler.getInstance().getPlayers().set("players." + player.getUniqueId().toString() + ".titles." + args[1], tempList);
+            
+        sender.sendMessage(ChatColor.GOLD + "Title: " + args[2] + " has been given to player: " + player.getName());
         
         DankTitles.getInstance().getDataHandler().save();
         

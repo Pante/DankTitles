@@ -19,6 +19,7 @@ package com.karus.danktitles.commands;
 
 import com.karus.danktitles.DankTitles;
 import com.karus.danktitles.backend.FileHandler;
+import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -46,7 +47,7 @@ class RemoveSubcommand extends BaseSubcommand {
         Player player = Bukkit.getPlayer(args[3]);
         
         if (player == null) {
-            sender.sendMessage(ChatColor.RED + "Invalid argument specified.");
+            sender.sendMessage(ChatColor.RED + "Invalid player specified.");
             return;
         }
         
@@ -55,8 +56,8 @@ class RemoveSubcommand extends BaseSubcommand {
         
         
         if (!FileHandler.getInstance().getPlayers().getStringList(path).contains(args[2])) {
-            sender.sendMessage(ChatColor.RED + "Player: " + player.getName() + " " + player.getUniqueId() 
-                    + "does not have title" + args[2] );
+            sender.sendMessage(ChatColor.RED + "Player: " + player.getName() + "\n" + player.getUniqueId() 
+                    + "\ndoes not have title: " + args[2]);
             return;
         }
         
@@ -71,7 +72,7 @@ class RemoveSubcommand extends BaseSubcommand {
         
         // Removing the title from players.yml
         FileHandler.getInstance().getPlayers().getStringList(path).remove(args[2]);
-        
+        sender.sendMessage(ChatColor.GOLD + "Title: " + args[2] + " has been removed from player: " + args[3]);
         DankTitles.getInstance().getDataHandler().save();
         
     }

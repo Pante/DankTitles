@@ -8,8 +8,9 @@ commands:
   danktitles:
     description: Use this command to check the version number and reload the plugin.
     usage: |
-      /<command> [<about|help|reload>]
-      /<command> [<add|remove>] [<category>] [<title>] [<player>]
+      /DankTitles
+      /DankTitles [<about|help|reload>]
+      /DankTitles [<add|remove>] [<category>] [<title>] [<player>]
     aliases: [dt]
 permissions:
   danktitles.*:

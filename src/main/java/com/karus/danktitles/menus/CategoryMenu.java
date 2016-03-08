@@ -17,6 +17,7 @@
  */
 package com.karus.danktitles.menus;
 
+import com.karus.danktitles.DankTitles;
 import com.karus.danktitles.backend.FileHandler;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,6 @@ public class CategoryMenu extends BaseMenu {
     public void display(Player player) {
         
         fileHandler = FileHandler.getInstance();
-        
         
         categories = new ArrayList();
         categories.addAll(fileHandler.getTitles().getConfigurationSection("categories").getKeys(false));
@@ -120,21 +120,25 @@ public class CategoryMenu extends BaseMenu {
             String path = ("categories." + category + ".");
             
             // Inherited method parseColour from BaseMenu, MenuUtility
+            
+            // Checks if the item is valid and if it isn't default to Stone block
             if (!fileHandler.getTitles().contains(path + "item") || Material.getMaterial(fileHandler.getTitles().getString(path + "item")) == null) {
                 item = new ItemStack(Material.STONE);
             }
             
+            // Checks if there is a colour specified, generates an item without a colour if colour is null/invalid
             else if (!fileHandler.getTitles().contains(path + "colour") || fileHandler.getTitles().getString(path + "colour").equalsIgnoreCase(null)) {
                 item = new ItemStack(Material.getMaterial(fileHandler.getTitles().getString(path + "item")));    
             }
             
             else {
-
+                
                 item = new ItemStack(Material.getMaterial(fileHandler.getTitles().getString(path + "item")), 1, 
                     (short) fileHandler.getTitles().getInt(path + "colour"));
                 
             }
             
+            // generateItemMeta inheritied from BaseMenu, generates the item's lore
             item = generateItemMeta(item, fileHandler.getTitles().getString(path 
                     + "display"), fileHandler.getTitles().getStringList(path + "lore"));
             
@@ -159,31 +163,49 @@ public class CategoryMenu extends BaseMenu {
         
         event.setCancelled(true);
         
+        // Initialisation
+        fileHandler = FileHandler.getInstance();
+        Player player = (Player) event.getWhoClicked();
         ItemStack clicked = event.getCurrentItem();
-        
-        
+        String parsedName = ChatColor.stripColor(clicked.getItemMeta().getDisplayName());
+
+        categories = new ArrayList();
+        categories.addAll(fileHandler.getTitles().getConfigurationSection("categories").getKeys(false));
+
+        pageSize = generatePageSize(categories.size());
+        pageTotal = generatePageTotal(categories.size(), pageSize);
         // Switch statement for determining which item was clicked and their corresponding behaviour
-        switch(ChatColor.stripColor(clicked.getItemMeta().getDisplayName())) {
+        switch(parsedName) {
             
             case "Previous Page":
-                CategoryMenu previousMenu = new CategoryMenu(page + 1, pageTotal);
-                previousMenu.display((Player) event.getWhoClicked());
+                if ((page - 1) > 0) {
+                    CategoryMenu previousMenu = new CategoryMenu(page + 1, pageTotal);
+                    previousMenu.display((Player) event.getWhoClicked());
+                }
+                else {
+                    player.sendMessage(ChatColor.RED + "You're already on the first page!");
+                }
                 break;
             
-                
             case "Next Page":
-                CategoryMenu nextMenu = new CategoryMenu(page - 1, pageTotal);
-                nextMenu.display((Player) event.getWhoClicked());
+                if ((page + 1) <= pageTotal) {
+                    CategoryMenu nextMenu = new CategoryMenu(page - 1, pageTotal);
+                    nextMenu.display((Player) event.getWhoClicked());
+                }
+                else {
+                    player.sendMessage(ChatColor.RED + "There's no more categories!");
+                }
                 break;
                 
             case "Invalid Title":
+                player.sendMessage(ChatColor.RED + "Welp, this is embarrassing! You should not be seeing this title.");
                 break;
                 
             default:
                 
                 for (String category : categories.subList(generateFirstIndex(page, pageSize), generateLastIndex(page, pageSize, categories.size()))) {
                     
-                    if (fileHandler.getTitles().getString("categories." + category + ".display").contains(category)) {
+                    if (fileHandler.getTitles().getString("categories." + category + ".display").contains(parsedName)) {
                         TitlesMenu titlesMenu = new TitlesMenu(category);
                         titlesMenu.display((Player) event.getWhoClicked());
                         break;

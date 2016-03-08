@@ -17,13 +17,10 @@
  */
 package com.karus.danktitles.menus;
 
-import com.karus.danktitles.DankTitles;
-import com.karus.danktitles.backend.FileHandler;
 import com.karus.danktitles.listeners.EventListener;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
@@ -48,9 +45,7 @@ public abstract class BaseMenu implements Menu, MenuUtility, EventListener<Inven
     
     @Override
     public int generatePageTotal(int total, int pageSize) {
-        if (pageSize > 54) {
-            pageSize = 54;
-        } 
+        
         if (total <= pageSize ) return 1;
         
         return (int) (Math.ceil((double) total / (pageSize - 9)));
@@ -87,7 +82,7 @@ public abstract class BaseMenu implements Menu, MenuUtility, EventListener<Inven
         else {
             itemMeta.setDisplayName(ChatColor.RED + "Invalid name");
         }
-        if (!lore.contains(null)) {
+        if (lore != null) {
             List<String> parsedLore = new ArrayList();
             for (String line: lore) {
                 line = ChatColor.translateAlternateColorCodes('&', line);

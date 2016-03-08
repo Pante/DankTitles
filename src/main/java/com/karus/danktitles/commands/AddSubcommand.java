@@ -42,18 +42,31 @@ class AddSubcommand extends BaseSubcommand {
         
         
         // Checks if the players and titles specified are valid
+        DankTitles.getInstance().getLogger().info("Check 1");
         Player player = Bukkit.getPlayer(args[3]);
-        String path = ("categories" + args[1] + ".titles." + args[2]);
-        
-        if (player == null || (!FileHandler.getInstance().getTitles().contains(path))) {
+        DankTitles.getInstance().getLogger().info("Check 2");
+        String path = ("categories." + args[1] + ".titles.");
+        DankTitles.getInstance().getLogger().info(path);
+        DankTitles.getInstance().getLogger().info("Check 3");
+        if (player == null || !(FileHandler.getInstance().getTitles().contains(path + args[2]))) {
+            
+            DankTitles.getInstance().getLogger().info("Value 1" + (player == null));
+            DankTitles.getInstance().getLogger().info("Value 2" + !FileHandler.getInstance().getTitles().contains(path + args[2]));
+            
             sender.sendMessage(ChatColor.RED + "Invalid argument specified.");
+            
             return;
         }
         
         
-        // Adding the title and player's name to the players.yml file
+        // Adding the title and player's name to the players.yml file if the player does not have the title
+        if (FileHandler.getInstance().getPlayers().getStringList("players." + player.getUniqueId().toString() + ".titles." + args[1]).contains(args[2])) {
+            sender.sendMessage(ChatColor.RED + "The player already has title: " + args[2]);
+            return;
+        }
+        
         FileHandler.getInstance().getPlayers().set("players." + player.getUniqueId().toString() + ".name", player.getName());
-        FileHandler.getInstance().getPlayers().set("players." + player.getUniqueId().toString() + ".titles." + args[1], args[2]);
+        FileHandler.getInstance().getPlayers().getString("players." + player.getUniqueId().toString() + ".titles." + args[1], args[2]);
         
         DankTitles.getInstance().getDataHandler().save();
         

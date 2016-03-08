@@ -22,6 +22,7 @@ import com.karus.danktitles.backend.FileHandler;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -39,8 +40,10 @@ public class TitlesMenu extends BaseMenu {
     // Inherits int page, pageSize & pageTotal from BaseMenu
     // Inherits Inventory menu, ItemStack item & ItemMeta itemMeta
     
+    // Fields
     private FileHandler fileHandler;
     public String category;
+    private List<String> titles;
     
     // Used only to register the listener
     public TitlesMenu(){}
@@ -52,10 +55,7 @@ public class TitlesMenu extends BaseMenu {
     
     public TitlesMenu(int page, int pageTotal, String category) {
         
-        if (page > 0 && page <= pageTotal) {
-            this.page = page;
-        }
-        
+        this.page = page;
         this.category = category;
         
     }
@@ -67,74 +67,73 @@ public class TitlesMenu extends BaseMenu {
     public void display(Player player) {
         
         fileHandler = FileHandler.getInstance();
+        titles = new ArrayList();
         
-        
-        List<String> titles = new ArrayList();
-        if (fileHandler.getPlayers().getStringList("players." + player.getUniqueId() + ".titles." + category) == null) {
-            player.sendMessage("It seems like you do not have any titles in this category!");
+        if (!fileHandler.getPlayers().contains("players." + player.getUniqueId() + ".titles." + category) || fileHandler.getPlayers().getStringList("players." + player.getUniqueId() + ".titles." + category) == null) {
+            player.sendMessage(ChatColor.RED + "It seems like you do not have any titles in this category!");
             return;
         }
         titles.addAll(fileHandler.getPlayers().getStringList("players." + player.getUniqueId() + ".titles." + category));
         
+        
         // Inherits generatePageSize and generatePageTotal from BaseMenu
-        pageSize = generatePageSize(titles.size());
+        pageSize = 54;
         pageTotal = generatePageTotal(titles.size(), pageSize);
         
         
         if (pageTotal == 1) {
-            
-            menu = Bukkit.createInventory(null, pageSize, "§l§2Titles - Categories§r");
-            
+            menu = Bukkit.createInventory(null, pageSize, "§l§2Titles - Category - " + category + "§r");
         }
         else {
-            
-            menu = Bukkit.createInventory(null, 54, "§1§2Titles - Categories - Page " + page + "§r");
-            
-            
-            // Create and place the Previous Page button
-            item = new ItemStack(Material.STAINED_CLAY, 1, DyeColor.LIME.getDyeData());
-            item = generateItemMeta(item, "§l§2Previous Page§r", null);
-            
-            menu.setItem(pageSize - 8, item);
-            
-            
-            // Create and place the Reset title button
-            item = new ItemStack(Material.ANVIL);
-            item = generateItemMeta(item, "§l§4Reset Title§r", null);
-            
-            
-            menu.setItem(pageSize - 5, item);
-            
-            
-            // Create and place the Back to main menu button
-            item = new ItemStack(Material.EYE_OF_ENDER);
-            item = generateItemMeta(item, "§l§2Main Menu§r", null);
-            
-            menu.setItem(pageSize - 4, item);
-            
-            
-            // Create and place the Next Page button
-            item = new ItemStack(Material.STAINED_CLAY, 1, DyeColor.LIME.getDyeData());
-            item = generateItemMeta(item, "§l§2Next Page§r", null);
-            
-            menu.setItem(pageSize, item);
-            
+            menu = Bukkit.createInventory(null, 54, "§1§2Titles - Category - " + category + "Page - " + page + "§r");
         }
         
+        // Create and place the Previous Page button
+        item = new ItemStack(Material.STAINED_CLAY, 1, (short) 5);
+        item = generateItemMeta(item, "§l§2Previous Page§r", null);
+
+        menu.setItem(pageSize - 9, item);
+
+
+        // Create and place the Reset title button
+        item = new ItemStack(Material.ANVIL);
+        item = generateItemMeta(item, "§l§4Reset Title§r", null);
+
+
+        menu.setItem(pageSize - 5, item);
+
+
+        // Create and place the Back to main menu button
+        item = new ItemStack(Material.EYE_OF_ENDER);
+        item = generateItemMeta(item, "§l§2Main Menu§r", null);
+
+        menu.setItem(pageSize - 6, item);
+
+
+        // Create and place the Next Page button
+        item = new ItemStack(Material.STAINED_CLAY, 1, (short) 5);
+        item = generateItemMeta(item, "§l§2Next Page§r", null);
+
+        menu.setItem(pageSize -1, item);
         
+        
+        // Generates the items to be placed
         for (String title : titles.subList(generateFirstIndex(page, pageSize), generateLastIndex(page, pageSize, titles.size()))) {
             
             String path = ("categories." + category + ".titles." + title + ".");
             
             // Inherited method parseColour from BaseMenu, MenuUtility
-            if (Material.getMaterial(fileHandler.getTitles().getString(path + "item")) == null) {
+            
+            // Checks if the item is valid and if it isn't default to Stone block
+            if (!fileHandler.getTitles().contains(path + "item") || Material.getMaterial(fileHandler.getTitles().getString(path + "item")) == null) {
                 item = new ItemStack(Material.STONE);
             }
+            
+            // Checks if there is a colour specified, generates an item without a colour if colour is null/invalid
             else if (!fileHandler.getTitles().contains(path + "colour") || fileHandler.getTitles().getString(path + "colour").equalsIgnoreCase(null)) {
-                
-                item = new ItemStack(Material.getMaterial(fileHandler.getTitles().getString(path + "item")));
-                        
+                item = new ItemStack(Material.getMaterial(fileHandler.getTitles().getString(path + "item")));    
             }
+            
             else {
                 
                 item = new ItemStack(Material.getMaterial(fileHandler.getTitles().getString(path + "item")), 1, 
@@ -163,47 +162,65 @@ public class TitlesMenu extends BaseMenu {
         
         
         Inventory eventMenu = event.getInventory();
-        if (!eventMenu.equals(menu)) return;
+        if (!eventMenu.getTitle().contains("§l§2Titles - Category - ")) return;
         
+        event.setCancelled(true);
+        
+        // Initialisation
+        fileHandler = FileHandler.getInstance();
         ItemStack clicked = event.getCurrentItem();
+        Player player = (Player) event.getWhoClicked();
         
+        titles = new ArrayList();
+                
+        titles.addAll(fileHandler.getPlayers().getStringList("players." + player.getUniqueId() + ".titles." + category));
+                
+        pageSize = 54;
+        pageTotal = generatePageTotal(titles.size(), pageSize);
         
         // Switch statement for determining which item was clicked and their corresponding behaviour
-        switch(clicked.getItemMeta().getDisplayName()) {
+        switch(ChatColor.stripColor(clicked.getItemMeta().getDisplayName())) {
             
-            case "§l§2Previous Page§r":
-                TitlesMenu previousMenu = new TitlesMenu(page + 1, pageTotal, category);
-                previousMenu.display((Player) event.getWhoClicked());
+            case "Previous Page":
+                if ((page - 1) > 0) {
+                    TitlesMenu previousMenu = new TitlesMenu(page - 1, pageTotal, category);
+                    previousMenu.display(player);
+                }
+                else {
+                    player.sendMessage(ChatColor.RED + "You're already on the first page!");
+                }
                 break;
             
                 
-            case "§l§4Reset Title§r":
-                Player player = (Player) event.getWhoClicked();
+            case "Reset Title":
                 DankTitles.chat.setPlayerPrefix(player, DankTitles.chat.getGroupPrefix(player.getWorld(), DankTitles.permission.getPrimaryGroup(player)));
                 break;
                 
                 
-            case "§l§2Main Menu§r":
+            case "Main Menu":
                 CategoryMenu mainMenu = new CategoryMenu();
-                mainMenu.display((Player) event.getWhoClicked());
+                mainMenu.display(player);
                 break;
                 
                 
-            case "§l§2Next Page§r":
-                TitlesMenu nextMenu = new TitlesMenu(page - 1, pageTotal, category);
-                nextMenu.display((Player) event.getWhoClicked());
+            case "Next Page":
+                if ((page + 1) <= pageTotal) {
+                    TitlesMenu nextMenu = new TitlesMenu(page + 1, pageTotal, category);
+                    nextMenu.display(player);
+                }
+                else {
+                    player.sendMessage(ChatColor.RED + "You've no more titles!");
+                }
                 break;
             
-            case "§l§cInvalid Title§r":
+            case "Invalid Title":
                 break;
                 
             default:
-                DankTitles.chat.setPlayerPrefix((Player) event.getWhoClicked(), clicked.getItemMeta().getDisplayName());
+                DankTitles.chat.setPlayerPrefix((Player) event.getWhoClicked(), clicked.getItemMeta().getDisplayName() + " ");
                 break;
             
         }
-    
-        event.setCancelled(true);
         
     }
 }

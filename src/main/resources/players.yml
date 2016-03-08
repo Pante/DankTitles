@@ -2,9 +2,8 @@
 #             Use this file for add or modifying players titles        #
 #=========================== ============ ============================ #
 players:
-    player_uuid:
-        name: player_name
-        titles:
-            category_name:
-                - title_ID_1
-                - title_ID_2
+  player_uuid:
+      name: player_name
+      titles:
+        normal:
+          - title_ID

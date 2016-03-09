@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -69,7 +68,8 @@ public class TitlesMenu extends BaseMenu {
         fileHandler = FileHandler.getInstance();
         titles = new ArrayList();
         
-        if (!fileHandler.getPlayers().contains("players." + player.getUniqueId() + ".titles." + category) || fileHandler.getPlayers().getStringList("players." + player.getUniqueId() + ".titles." + category) == null) {
+        if (!fileHandler.getPlayers().contains("players." + player.getUniqueId() + ".titles." + category) || fileHandler.getPlayers().getStringList("players." + player.getUniqueId() + ".titles." + category) == null ||
+                fileHandler.getPlayers().getStringList("players." + player.getUniqueId() + ".titles." + category).isEmpty()) {
             player.sendMessage(ChatColor.RED + "It seems like you do not have any titles in this category!");
             return;
         }

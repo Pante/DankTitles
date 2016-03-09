@@ -19,6 +19,7 @@ permissions:
       danktitles.about: true
       danktitles.help: true
       danktitles.reload: true
+      danktitltes.save: true
       danktitles.titles: true
       danktitles.add: true
       danktitles.remove: true
@@ -28,6 +29,12 @@ permissions:
   danktitles.help:
     description: Allows players to view a list of plugin commands
     default: not op
+  danktitles.reload:
+    description: Allows players to force-reload the plugin
+    default: op
+  danktitles.save:
+    description: Allows players to force-save the plugin
+    default: op
   danktitles.titles:
     description: Allows players to open a GUI menu of all the titles they own
     default: not op

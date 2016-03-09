@@ -17,11 +17,13 @@
  */
 package com.karus.danktitles.commands;
 
+import com.avaje.ebean.enhance.ant.OfflineFileTransform;
 import com.karus.danktitles.DankTitles;
 import com.karus.danktitles.backend.FileHandler;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -44,7 +46,7 @@ class RemoveSubcommand extends BaseSubcommand {
         
         
         // Checks if the player specified is invalid and has the title
-        Player player = Bukkit.getPlayer(args[3]);
+        OfflinePlayer player = Bukkit.getOfflinePlayer(args[3]);
         
         if (player == null) {
             sender.sendMessage(ChatColor.RED + "Invalid player specified.");

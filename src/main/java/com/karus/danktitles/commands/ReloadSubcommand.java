@@ -35,7 +35,7 @@ class ReloadSubcommand extends BaseSubcommand {
         
         // Methods inheritied from BaseSubcommand, CommandUtility
         if (!checkArgument(sender, args, 1, 1)) return;
-        if (!checkPlayer(sender, "danktitles.reload"));
+        if (!checkPlayer(sender, "danktitles.reload")) return;
         
         DankTitles.getInstance().getDataHandler().load();
         sender.sendMessage(ChatColor.GOLD + "DankTitles reloaded...");

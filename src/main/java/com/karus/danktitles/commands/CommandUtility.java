@@ -17,6 +17,7 @@
  */
 package com.karus.danktitles.commands;
 
+import com.karus.danktitles.DankTitles;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -34,7 +35,7 @@ public interface CommandUtility {
         
         Player player = (Player) sender;
         
-        if (player.hasPermission(permission)) return true;
+        if (DankTitles.permission.has(player, permission)) return true;
         else {
             player.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
             return false;

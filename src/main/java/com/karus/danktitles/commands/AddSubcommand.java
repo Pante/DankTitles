@@ -22,6 +22,7 @@ import com.karus.danktitles.backend.FileHandler;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -43,7 +44,7 @@ class AddSubcommand extends BaseSubcommand {
         
         
         // Checks if the players and titles specified are valid
-        Player player = Bukkit.getPlayer(args[3]);
+        OfflinePlayer player = Bukkit.getOfflinePlayer(args[3]);
         String path = ("categories." + args[1] + ".titles.");
         
         

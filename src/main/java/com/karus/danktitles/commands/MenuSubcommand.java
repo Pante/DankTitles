@@ -17,7 +17,6 @@
  */
 package com.karus.danktitles.commands;
 
-import com.karus.danktitles.DankTitles;
 import com.karus.danktitles.menus.CategoryMenu;
 import com.karus.danktitles.menus.Menu;
 import org.bukkit.ChatColor;
@@ -35,13 +34,13 @@ class MenuSubcommand extends BaseSubcommand {
     @Override
     
     // Implementation of execute() method inheritied from BaseSubcommand, Subcommand
-    // Used 
+    // Used to open up the menu for title selection
     public void execute(CommandSender sender, String[] args) {
         
         
         // Methods inheritied from CommandUtility
         if (!checkArgument(sender, args, 0, 0)) return;
-        if (!this.checkPlayer(sender, "danktitles.titles")) return;
+        if (!checkPlayer(sender, "danktitles.titles")) return;
         Player player = (Player) sender;
         
         setMenu(new CategoryMenu());

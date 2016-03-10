@@ -57,7 +57,14 @@ public class MainCommand extends BaseCommand {
             case "reload":
                 setSubcommand(new ReloadSubcommand());
                 break;
-
+            
+            case "save":
+                setSubcommand(new SaveSubcommand());
+                break;
+                
+            case "reset":
+                setSubcommand(new ResetSubcommand());
+                break;
 
             case "add":
                 setSubcommand(new AddSubcommand());
@@ -68,7 +75,7 @@ public class MainCommand extends BaseCommand {
                 break;
 
             default:
-                DankTitles.getInstance().getLogger().severe(ChatColor.RED + "Invalid argument specified");
+                sender.sendMessage(ChatColor.RED + "Invalid argument specified");
                 return true;
                 
         }

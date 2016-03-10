@@ -168,7 +168,10 @@ public class TitlesMenu extends BaseMenu {
         
         // Initialisation
         fileHandler = FileHandler.getInstance();
+        
         ItemStack clicked = event.getCurrentItem();
+        if (clicked.getType() == null|| clicked.getType() == Material.AIR) return;
+        
         Player player = (Player) event.getWhoClicked();
         
         titles = new ArrayList();

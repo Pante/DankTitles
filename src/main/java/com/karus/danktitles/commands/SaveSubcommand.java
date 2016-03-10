@@ -17,6 +17,7 @@
 package com.karus.danktitles.commands;
 
 import com.karus.danktitles.DankTitles;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -31,11 +32,11 @@ public class SaveSubcommand extends BaseSubcommand {
     public void execute(CommandSender sender, String[] args) {
         
         // Methods inheritied from CommandUtility
-        if (!checkArgument(sender, args, 0, 0)) return;
+        if (!checkArgument(sender, args, 1, 1)) return;
         if (!checkPlayer(sender, "danktitles.save")) return;
         
         DankTitles.getInstance().getDataHandler().save();
-        
+        sender.sendMessage(ChatColor.GOLD + "DankTitles saved...");
     }
     
 }

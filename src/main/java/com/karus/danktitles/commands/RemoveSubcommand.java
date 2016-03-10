@@ -17,7 +17,6 @@
  */
 package com.karus.danktitles.commands;
 
-import com.avaje.ebean.enhance.ant.OfflineFileTransform;
 import com.karus.danktitles.DankTitles;
 import com.karus.danktitles.backend.FileHandler;
 import java.util.List;
@@ -25,7 +24,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 /**
  *

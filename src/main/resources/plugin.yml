@@ -1,6 +1,6 @@
 name: DankTitles
 main: com.karus.danktitles.DankTitles
-version: 1.0.0
+version: 1.0.2
 description: Create dank titles for players
 author: PanteLegacy
 depend: [Vault]
@@ -9,7 +9,7 @@ commands:
     description: Use this command to check the version number and reload the plugin.
     usage: |
       /DankTitles
-      /DankTitles [<about|help|reload>]
+      /DankTitles [<about|help|reload|reset|save>]
       /DankTitles [<add|remove>] [<category>] [<title>] [<player>]
     aliases: [dt]
 permissions:
@@ -19,19 +19,23 @@ permissions:
       danktitles.about: true
       danktitles.help: true
       danktitles.reload: true
+      danktitles.reset: true
       danktitltes.save: true
       danktitles.titles: true
       danktitles.add: true
       danktitles.remove: true
   danktitles.about:
     description: Allows players to view the version of the plugin
-    default: not op
+    default: op
   danktitles.help:
     description: Allows players to view a list of plugin commands
     default: not op
   danktitles.reload:
     description: Allows players to force-reload the plugin
     default: op
+  danktitles.reset:
+    description: Allows players to reset their titles back to their group defaults
+    default: not op  
   danktitles.save:
     description: Allows players to force-save the plugin
     default: op

@@ -17,7 +17,6 @@
  */
 package com.karus.danktitles.menus;
 
-import com.karus.danktitles.DankTitles;
 import com.karus.danktitles.backend.FileHandler;
 import java.util.ArrayList;
 import java.util.List;
@@ -166,7 +165,10 @@ public class CategoryMenu extends BaseMenu {
         // Initialisation
         fileHandler = FileHandler.getInstance();
         Player player = (Player) event.getWhoClicked();
+        
         ItemStack clicked = event.getCurrentItem();
+        if (clicked.getType() == null|| clicked.getType() == Material.AIR) return;
+        
         String parsedName = ChatColor.stripColor(clicked.getItemMeta().getDisplayName());
 
         categories = new ArrayList();

@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2016 PanteLegacy @ karusmc.com
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.karus.danktitles.menus;
 
-import com.karus.danktitles.listeners.EventListener;
+import com.karus.danktitles.DankTitles;
+import com.karus.danktitles.PreconditionChecker;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.ChatColor;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.Listener;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -31,11 +31,11 @@ import org.bukkit.inventory.meta.ItemMeta;
  *
  * @author PanteLegacy @ karusmc.com
  */
-public abstract class BaseMenu implements Menu, MenuUtility, EventListener<InventoryClickEvent>, Listener {
-    
+public abstract class BaseMenu implements Menu, MenuUtility, PreconditionChecker {
     // Page related variables
     // NOTE: pageSize refers to the fillable slots by the titles AND the navigation buttons.
     public int page, pageSize, pageTotal;
+    public boolean dynamicSize;
     
     // Menu & Item related variables
     public Inventory menu;
@@ -43,56 +43,40 @@ public abstract class BaseMenu implements Menu, MenuUtility, EventListener<Inven
     public ItemMeta itemMeta;
     
     
-    @Override
-    public int generatePageTotal(int total, int pageSize) {
+    // Helper method that generates an item
+    public ItemStack generateItem(FileConfiguration config, String path) {
         
-        if (total <= pageSize ) return 1;
+        Material material = Material.STONE;
         
-        return (int) (Math.ceil((double) total / (pageSize - 9)));
+        if (!checkNull(config.getString(path + ".item"))) {
+            material = Material.getMaterial(config.getString(path + ".item"));
+        }
         
-    }
-    
-    @Override
-    public int generatePageSize(int total) {
-        
-        // Checks if too many items were specified
-        return Math.min((int) (Math.ceil(((double) total / 9.0 )) * 9.0), 54);
-        
+        return new ItemStack(material, 1, (short) config.getInt(path + ".colour"));
     }
     
     
-    @Override
-    public int generateFirstIndex(int page, int pageSize) {
-        return ((page * pageSize) - (pageSize));
-    }
-    
-    @Override
-    public int generateLastIndex(int page, int pageSize, int rootListSize) {
-        
-        return Math.min((page * pageSize), rootListSize );
-        
-    }
-    
-    public ItemStack generateItemMeta(ItemStack item, String name, List<String> lore) {
+    // Generates the item's meta
+    public ItemStack generateItemMeta(FileConfiguration config, String path, ItemStack item) {
         
         itemMeta = item.getItemMeta();
-        if (name != null) {
-            itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+        if (checkNull(config.getString(path + ".display"))) {
+            itemMeta.setDisplayName(ChatColor.RED + "Invalid display");
         }
         else {
-            itemMeta.setDisplayName(ChatColor.RED + "Invalid name");
+            itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', config.getString(path + ".display")));
         }
-        if (lore != null) {
+        
+        if (!checkCollection(config.getStringList(path + ".lore"))) {
+            
             List<String> parsedLore = new ArrayList();
-            for (String line: lore) {
-                line = ChatColor.translateAlternateColorCodes('&', line);
-                parsedLore.add(line);
+            for (String line: config.getStringList(path + ".lore")) {
+                parsedLore.add(parseColouredString(line));
             }
+            
             itemMeta.setLore(parsedLore);
+            
         }
-        
-        
-        
         
         item.setItemMeta(itemMeta);
         

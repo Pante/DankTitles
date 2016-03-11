@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2016 PanteLegacy @ karusmc.com
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,26 +12,29 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.karus.danktitles.commands;
 
-import com.karus.danktitles.DankTitles;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 /**
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class MainCommand extends BaseCommand {
+public class MainCommand implements CommandExecutor, CommandChecker {
     
-    @Override
+    // <------ Fields ------>
     
-    // Implementation of onCommand() inheritied from BaseCommand, CommandExectuor
-    // getSubcommand and setSubcommand inheritie from BaseCommand
+    // Interface that all subcommands implement
+    private Subcommand subcommand;
+    
+     @Override
+    
+    // Implementation of onCommand() inheritied from CommandExectuor
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         
         if (args.length == 0) {
@@ -62,8 +65,8 @@ public class MainCommand extends BaseCommand {
                 setSubcommand(new SaveSubcommand());
                 break;
                 
-            case "reset":
-                setSubcommand(new ResetSubcommand());
+            case "set":
+                setSubcommand(new SetSubcommand());
                 break;
 
             case "add":
@@ -75,7 +78,7 @@ public class MainCommand extends BaseCommand {
                 break;
 
             default:
-                sender.sendMessage(ChatColor.RED + "Invalid argument specified");
+                sender.sendMessage(ChatColor.RED + "Unknown argument: " + args[0] + " specified.");
                 return true;
                 
         }
@@ -85,5 +88,19 @@ public class MainCommand extends BaseCommand {
         return true;
         
     }
-}
     
+    
+    // <------ Getter & Setter Methods ------>
+    
+    // Getter method to get the value of subcommand
+    public Subcommand getSubcommand() {
+        return this.subcommand;
+    }
+    
+    
+    // Setter method which sets the value of subcommand
+    public void setSubcommand(Subcommand subcommand) {
+        this.subcommand = subcommand;
+    }
+    
+}

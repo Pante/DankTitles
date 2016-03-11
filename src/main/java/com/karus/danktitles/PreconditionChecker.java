@@ -1,3 +1,7 @@
+package com.karus.danktitles;
+
+import java.util.Collection;
+
 /*
  * Copyright (C) 2016 PanteLegacy @ karusmc.com
  *
@@ -14,17 +18,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.karus.danktitles.commands;
-
-import org.bukkit.command.CommandSender;
 
 /**
  *
  * @author PanteLegacy @ karusmc.com
  */
-public interface Subcommand {
+public interface PreconditionChecker {
     
-    // Method that contains the logic of the subcommand
-    public void execute(CommandSender sender, String[] args);
+    // Checks if the argument is null and returns true if it is
+    public default <T> boolean checkNull(T object) {
+        return object == null;
+    }
+    
+    
+    // Checks if the argument, a Collection is null or if it's empty and returns true if it is
+    public default boolean checkCollection(Collection<?> collection) {
+        return (collection == null || collection.isEmpty());
+    }
+    
+    
+    // Checks if the collection contains the object, returns true if it contains the object
+    public default <T> boolean checkContain(Collection<T> collection, T object) {
+        return (collection.contains(object));
+    }
     
 }

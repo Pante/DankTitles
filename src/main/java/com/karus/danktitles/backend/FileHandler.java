@@ -17,6 +17,7 @@
 package com.karus.danktitles.backend;
 
 import com.karus.danktitles.DankTitles;
+import com.karus.danktitles.PreconditionChecker;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,14 +29,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class FileHandler implements DataHandler {
+public class FileHandler implements PreconditionChecker, DataHandler{
     
     // Fields
-    private File titlesFile = null, playersFile = null;
+    private File configFile = null, titlesFile = null, playersFile = null;
     private YamlConfiguration titles = null, players = null;
     
     
-    // Implementation of Singleton
+    // Singleton Implementation
     private static FileHandler instance;
     private FileHandler() {}
     public static FileHandler getInstance() {
@@ -46,124 +47,133 @@ public class FileHandler implements DataHandler {
     }
     
     
-    
     @Override
-    // Method inheritied from DataHandler
+    
+    // Implementation of method inheritied from DataHandler, loads the data from files
     public void load() {
         
+        loadConfig();
         loadTitles();
         loadPlayers();
         
-        save();
     }
     
+    // Helper method for load() which creates & loads the config file
+    private void loadConfig() {
+        
+        if (checkNull(configFile)) {
+            configFile = new File(DankTitles.instance.getDataFolder(), "config.yml");
+        }
+        if (!configFile.exists()) {
+            DankTitles.instance.getLogger().info("config.yml could not be found... creating file");
+            DankTitles.instance.saveDefaultConfig();
+        }
+        
+        DankTitles.instance.reloadConfig();
+        
+    }
     
-    // Helper method for load() which handles the titles
+    // Helper method for load() which creates & loads the titles file
     private void loadTitles() {
-        if (titlesFile == null) {
-            titlesFile = new File(DankTitles.getInstance().getDataFolder(), "titles.yml");
+        
+        if (checkNull(titlesFile)) {
+            titlesFile = new File(DankTitles.instance.getDataFolder(), "titles.yml");
         }
-        
-        if (!titlesFile.exists()) {
-            DankTitles.getInstance().getLogger().severe("titles.yml could not be found... creating file"); 
-        
-            try {
-
-                Reader inputStream = new InputStreamReader(DankTitles.getInstance().getResource("titles.yml"), "UTF-8");
-                titles = YamlConfiguration.loadConfiguration(inputStream);
-
-                } catch (UnsupportedEncodingException e) {
-
-                    DankTitles.getInstance().getLogger().severe("Unable to retrieve resource: titles.yml" );
-                    e.printStackTrace();
-                    DankTitles.getInstance().getServer().getPluginManager().disablePlugin(DankTitles.getInstance());
-
-                }
-        
-        }
-        else {
+        if (titlesFile.exists()) {
             titles = YamlConfiguration.loadConfiguration(titlesFile);
         }
-        
-    }
-    
-    
-    // Helper method for load() which handles the players
-    private void loadPlayers() {
-        
-        if (playersFile == null) {
-            playersFile = new File(DankTitles.getInstance().getDataFolder(), "players.yml");
-        }
-        
-        if (!playersFile.exists()) {
-            DankTitles.getInstance().getLogger().severe("players.yml could not be found... creating file"); 
+        else {
+            DankTitles.instance.getLogger().info("titles.yml could not be found... creating file"); 
         
             try {
 
-                Reader inputStream = new InputStreamReader(DankTitles.getInstance().getResource("players.yml"), "UTF-8");
-                players = YamlConfiguration.loadConfiguration(inputStream);
+                Reader inputStream = new InputStreamReader(DankTitles.instance.getResource("titles.yml"), "UTF-8");
+                titles = YamlConfiguration.loadConfiguration(inputStream);
+                titles.save(titlesFile);
 
-                } catch (UnsupportedEncodingException e) {
+            } catch (UnsupportedEncodingException e) {
 
-                    DankTitles.getInstance().getLogger().severe("Unable to retrieve resource: players.yml" );
-                    e.printStackTrace();
-                    DankTitles.getInstance().getServer().getPluginManager().disablePlugin(DankTitles.getInstance());
+                DankTitles.instance.getLogger().severe("Unable to retrieve resource: titles.yml" );
+                e.printStackTrace();
+                DankTitles.instance.getServer().getPluginManager().disablePlugin(DankTitles.instance);
 
-                }
+            } catch (IOException e) {
+                
+                DankTitles.instance.getLogger().severe("Failed to save titles.yml to disk");
+                e.printStackTrace();
+                DankTitles.instance.getServer().getPluginManager().disablePlugin(DankTitles.instance);
+                
+            }
+        }
+    }
+    
+    // Helper method for load() which creates & loads the players file
+    private void loadPlayers() {
         
+        if (checkNull(playersFile)) {
+            playersFile = new File(DankTitles.instance.getDataFolder(), "players.yml");
+        }
+        if (playersFile.exists()) {
+            players = YamlConfiguration.loadConfiguration(playersFile);
         }
         else {
-            players = YamlConfiguration.loadConfiguration(playersFile);
+            DankTitles.instance.getLogger().info("players.yml could not be found... creating file"); 
+        
+            try {
+
+                Reader inputStream = new InputStreamReader(DankTitles.instance.getResource("players.yml"), "UTF-8");
+                players = YamlConfiguration.loadConfiguration(inputStream);
+                players.save(playersFile);
+                
+            } catch (UnsupportedEncodingException e) {
+
+                DankTitles.instance.getLogger().severe("Unable to retrieve resource: players.yml" );
+                e.printStackTrace();
+                DankTitles.instance.getServer().getPluginManager().disablePlugin(DankTitles.instance);
+                
+            } catch (IOException e) {
+                
+                DankTitles.instance.getLogger().severe("Failed to save players.yml to disk");
+                e.printStackTrace();
+                DankTitles.instance.getServer().getPluginManager().disablePlugin(DankTitles.instance);
+                
+            }
         }
         
     }
-    
     
     
     @Override
-    // Method inheritied from DataHandler
-    public void save() {
-        try {
+    
+    // Implementation of method inheritied form DataHandler
+    public void save() throws IOException {
+
+            DankTitles.instance.saveConfig();
             titles.save(titlesFile);
             players.save(playersFile);
-        } catch (IOException e) {
-            DankTitles.getInstance().getLogger().severe("Failed to save files to disk. Changes were not saved!");
-            e.printStackTrace();
-        }
+
     }
     
     
-    // <------ Getter and Setter methods ------>
+    // <------ Getter & Setter methods ------>
     
+    @Override
     
-    // Getter methods for YamlConfigurations
+    // Implementation of method inheritied from DataHandler
     public YamlConfiguration getTitles() {
-        if (titles == null) {
+        if (checkNull(titles)) {
             load();
         }
         return titles;
     }
-   
+    
+    @Override
+    
+    // Implementation of method inheritied from DataHandler
     public YamlConfiguration getPlayers() {
-        if (players == null) {
+        if (checkNull(players)) {
             load();
         }
         return players;
     }
-    
-    
-    public File getTitlesFile() {
-        if (titlesFile == null) {
-            load();
-        }
-        return titlesFile;
-    }
-    
-    public File getPlayersFile() {
-        if (playersFile == null) {
-            load();
-        }
-        return playersFile;
-    }
-    
 }

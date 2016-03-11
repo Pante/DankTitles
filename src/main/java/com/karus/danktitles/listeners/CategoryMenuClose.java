@@ -14,17 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.karus.danktitles.commands;
+package com.karus.danktitles.listeners;
 
-import org.bukkit.command.CommandSender;
+import com.karus.danktitles.menus.CategoryMenu;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 
 /**
  *
  * @author PanteLegacy @ karusmc.com
  */
-public interface Subcommand {
+public class CategoryMenuClose implements Listener {
+    @EventHandler
     
-    // Method that contains the logic of the subcommand
-    public void execute(CommandSender sender, String[] args);
-    
+    public void onClose(InventoryCloseEvent e) {
+        if (e.getInventory().getTitle().contains("Titles - Category") && CategoryMenu.getMenu().containsKey(e.getPlayer().getUniqueId())) {
+            CategoryMenu.getMenu().remove(e.getPlayer().getUniqueId());
+        }
+    }
 }

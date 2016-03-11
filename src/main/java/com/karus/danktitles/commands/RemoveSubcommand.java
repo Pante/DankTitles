@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2016 PanteLegacy @ karusmc.com
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,13 +12,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.karus.danktitles.commands;
 
 import com.karus.danktitles.DankTitles;
-import com.karus.danktitles.backend.FileHandler;
+import java.io.IOException;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,54 +28,59 @@ import org.bukkit.command.CommandSender;
  *
  * @author PanteLegacy @ karusmc.com
  */
-// Class resp
-class RemoveSubcommand extends BaseSubcommand {
+public class RemoveSubcommand extends BaseSubcommand {
+    
+    // Inherities FileHandler fileHandler from BaseSubcommand
     
     @Override
     
-    // Implementation of method inheritied from BaseSubcommand and CommandUtility
-    // Used to remove a title from a player
+    // Implementation of method inheritied from BaseSubcommand and Subcommand
+    // Subcommand removes the title from a player
     public void execute(CommandSender sender, String[] args) {
 
-        // Methods inherited from BaseSubcommand, CommandUtility
-        if (!checkArgument(sender, args, 4, 4)) return;
+        // Methods inherited from BaseSubcommand, CommandChecker
+        if (!checkArgumentNumber(sender, args, 4, 4)) return;
         if (!checkPlayer(sender, "danktitles.remove")) return;
         
         
         // Checks if the player specified is invalid and has the title
-        OfflinePlayer player = Bukkit.getOfflinePlayer(args[3]);
-        
-        if (player == null) {
-            sender.sendMessage(ChatColor.RED + "Invalid player specified.");
+        if (checkNull(Bukkit.getOfflinePlayer(args[1]))) {
+            sender.sendMessage(ChatColor.RED + "No such player exists!");
             return;
         }
         
+        OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
         
-        String path = ("players." + player.getUniqueId() + ".titles." + args[1]);
         
+        // Checks if the file contain the respective paths
+        String playerPath = ("players." + player.getUniqueId() + ".titles." + args[2]);
         
-        if (!FileHandler.getInstance().getPlayers().getStringList(path).contains(args[2])) {
-            sender.sendMessage(ChatColor.RED + "Player: " + player.getName() + "\n" + player.getUniqueId() 
-                    + "\ndoes not have title: " + args[2]);
+        if (!checkContain(fileHandler.getPlayers().getStringList(playerPath), args[3])) {
+            sender.sendMessage(ChatColor.RED + args[1] + " does not have title: " + args[3]);
             return;
         }
         
-        
-        if (!player.getName().equalsIgnoreCase(FileHandler.getInstance().getPlayers()
-                .getString("players." + player.getUniqueId().toString() + ".name"))) {
-            
-            FileHandler.getInstance().getPlayers().set("players." + player.getUniqueId().toString() + ".name", player.getName());
-            
+        // Checks if the player's name has changed and updates it if it did
+        if (!fileHandler.getPlayers().getString("players." + player.getUniqueId() + ".name").equals(player.getName())) {
+            fileHandler.getPlayers().set("players." + player.getUniqueId() + ".name", player.getName());
         }
         
         
-        // Removing the title from players.yml
-        List<String> tempList = FileHandler.getInstance().getPlayers().getStringList(path);
+        
+        // Removes the title
+        List<String> tempList = fileHandler.getPlayers().getStringList(playerPath);
         tempList.remove(args[2]);
-        FileHandler.getInstance().getPlayers().set(path, tempList);
-        sender.sendMessage(ChatColor.GOLD + "Title: " + args[2] + " has been removed from player: " + args[3]);
-        DankTitles.getInstance().getDataHandler().save();
+        
+        fileHandler.getPlayers().set(playerPath, tempList);
+        
+        sender.sendMessage(ChatColor.GOLD + args[1] + " has been stripped of title: " + args[3]);
+        
+        
+        try {
+            DankTitles.instance.getDataHandler().save();
+        } catch (IOException e) {
+            sender.sendMessage(ChatColor.RED + "Failed to save changes to disk!");
+        }
         
     }
-    
 }

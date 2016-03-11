@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2016 PanteLegacy @ karusmc.com
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,8 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.karus.danktitles.commands;
 
@@ -27,23 +26,23 @@ import org.bukkit.entity.Player;
  *
  * @author PanteLegacy @ karusmc.com
  */
-class MenuSubcommand extends BaseSubcommand {
+public class MenuSubcommand extends BaseSubcommand {
     
     private Menu menu;
     
     @Override
     
     // Implementation of execute() method inheritied from BaseSubcommand, Subcommand
-    // Used to open up the menu for title selection
+    // Subcommand used to open up the menu for title selection
     public void execute(CommandSender sender, String[] args) {
         
         
-        // Methods inheritied from CommandUtility
-        if (!checkArgument(sender, args, 0, 0)) return;
+        // Methods inheritied from BaseSubcommand, CommandChecker
+        if (!checkArgumentNumber(sender, args, 0, 0)) return;
         if (!checkPlayer(sender, "danktitles.titles")) return;
         Player player = (Player) sender;
         
-        setMenu(new CategoryMenu());
+        setMenu(new CategoryMenu(player));
         
         menu.display(player);
         
@@ -51,7 +50,7 @@ class MenuSubcommand extends BaseSubcommand {
     
     @Override
     
-    // Implementation of checkPlayer() method inheritied from BaseSubcommand, CommandUtility
+    // Implementation of checkPlayer() method inheritied from BaseSubcommand, CommandChecker
     // Overriden so that the method will return false if the sender is not a player
     public boolean checkPlayer(CommandSender sender, String permission) {
         

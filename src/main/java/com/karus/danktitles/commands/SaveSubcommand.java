@@ -17,6 +17,7 @@
 package com.karus.danktitles.commands;
 
 import com.karus.danktitles.DankTitles;
+import java.io.IOException;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -25,18 +26,26 @@ import org.bukkit.command.CommandSender;
  * @author PanteLegacy @ karusmc.com
  */
 public class SaveSubcommand extends BaseSubcommand {
-
+    
+    // Inherities FileHandler fileHandler from BaseSubcommand
+    
     @Override
+    
     // Implementaiton of method inheritied from BaseSubcommand, Subcommand
-    // Used to force save the plugin
+    // Subcommand force-saves the changes to disk
     public void execute(CommandSender sender, String[] args) {
         
-        // Methods inheritied from CommandUtility
-        if (!checkArgument(sender, args, 1, 1)) return;
+        // Methods inheritied from BaseSubcommand, CommandChecker
+        if (!checkArgumentNumber(sender, args, 1, 1)) return;
         if (!checkPlayer(sender, "danktitles.save")) return;
         
-        DankTitles.getInstance().getDataHandler().save();
-        sender.sendMessage(ChatColor.GOLD + "DankTitles saved...");
+        try {
+            DankTitles.instance.getDataHandler().save();
+            sender.sendMessage(ChatColor.GOLD + "DankTitles has been saved.");
+        } catch (IOException e) {
+            sender.sendMessage(ChatColor.RED + "Failed to save changes to disk!");
+        }
+        
+        
     }
-    
 }

@@ -1,2 +1,42 @@
-
+menus:
+  category:
+    dynamic-page: true
+    page-size: 54
+    
+  titles:
+    dynamic-page: false
+    page-size: 54
+    
+  icons:
+    back:
+      display: '&2Previous page'
+      item: STAINED_CLAY
+      colour: 5
+      lore: []
+      
+    reset:
+      display: '&4Reset title'
+      item: ANVIL
+      colour: null
+      lore: []
+      
+    menu:
+      display: '&2Main Menu'
+      item: EYE_OF_ENDER
+      colour: null
+      lore: []
+      
+    next:
+      display: '&2Next page'
+      item: STAINED_CLAY
+      colour: 5
+      lore: []
+      
+  messages:
+    no-categories: '&cThere are currently no categories available!'
+    no-titles: '&cYou do not have any titles in this category!'
+    invalid-title: '&cWelp! This is embarrassing! You should not be seeing this, please contact the server administrator(s)!'
+    first-page: '&cYou are already on the first page!'
+    last-page: '&cYou are already on the last page!'
+  
 

@@ -19,7 +19,11 @@ package com.karus.danktitles;
 import com.karus.danktitles.backend.DataHandler;
 import com.karus.danktitles.backend.FileHandler;
 import com.karus.danktitles.commands.MainCommand;
+import com.karus.danktitles.listeners.CategoryMenuClose;
+import com.karus.danktitles.listeners.CategoryMenuListener;
 import com.karus.danktitles.listeners.PlayerListener;
+import com.karus.danktitles.listeners.TitlesMenuClose;
+import com.karus.danktitles.listeners.TitlesMenuListener;
 import com.karus.danktitles.menus.CategoryMenu;
 import com.karus.danktitles.menus.TitlesMenu;
 import net.milkbowl.vault.chat.Chat;
@@ -31,109 +35,108 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class DankTitles extends JavaPlugin {
+public class DankTitles extends JavaPlugin implements PreconditionChecker {
     
-    //Static fields
+    // Static fields
+    public static DankTitles instance;
+    
     public static Chat chat = null;
     public static Permission permission = null;
     
-    private static DankTitles instance;
-    
-    // Field
-    private DataHandler dataHandler;
-    
-    
+    // Fields
+    public DataHandler dataHandler;
+            
+           
     @Override
+    
+    // Implemenation of method inherited from JavaPlugin
     public void onEnable() {
-        
-        setInstance(this);
+        instance = this;
         
         setDataHandler(FileHandler.getInstance());
         getDataHandler().load();
         
-        setupVault();
+        registerVault();
         
-        DankTitles.instance.getCommand("DankTitles").setExecutor(new MainCommand());
+        registerCommands();
         
-        getServer().getPluginManager().registerEvents(new PlayerListener(),this);
-        getServer().getPluginManager().registerEvents(new CategoryMenu(),this);
-        getServer().getPluginManager().registerEvents(new TitlesMenu(), this);
+        registerEvents();
         
     }
-    
     
     @Override
+    
+    // Implementation of method inherited from JavaPlugin
     public void onDisable() {
         
+        CategoryMenu.getMenu().clear();
+        TitlesMenu.getMenu().clear();
+        
     }
-   
     
     
-    // <------ Method to set up Vault ------>
+    // <------ Helper methods for initialising ------>
     
+    // <--- Methods for setting up vault --->
     
-    // Wrapper method to set up vault
-    private void setupVault() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null || !setupChat() || !setupPermissions()) {
-            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+    private void registerVault() {
+        if (checkNull(getServer().getPluginManager().getPlugin("Vault")) || !registerVaultChat() || !registerVaultPermissions()) {
+            getLogger().severe(String.format("[%s] - Disabled as Vault dependency could not be found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
         }
     }
     
-    
-    // Helper method for setupVault() that sets up Vault Chat
-    private boolean setupChat() {
-        
+    // Helper method that registers the Chat component of vault
+    private boolean registerVaultChat() {
         RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
-        if (rsp == null) {
+        if (checkNull(rsp)) {
             return false;
         }
         
         chat = rsp.getProvider();
         return chat != null;
-        
     }
     
-    
-    // Helper method for setupVault() that sets up Vault Permissions
-    private boolean setupPermissions() {
-        
+    // Helper method that registers the Permissions component of vault
+    private boolean registerVaultPermissions() {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        if (rsp == null) {
+        if (checkNull(rsp)) {
             return false;
         }
         
         permission = rsp.getProvider();
         return permission != null;
+    }
+    
+    
+    // Method that registers the commands
+    public void registerCommands() {
+        getCommand("DankTitles").setExecutor(new MainCommand());
+    }
+    
+    
+    // Method that registers the listeners & events
+    public void registerEvents() {
+        
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        
+        getServer().getPluginManager().registerEvents(new CategoryMenuListener(), this);
+        getServer().getPluginManager().registerEvents(new TitlesMenuListener(), this);
+        
+        getServer().getPluginManager().registerEvents(new CategoryMenuClose(), this);
+        getServer().getPluginManager().registerEvents(new TitlesMenuClose(), this);
         
     }
     
     
+    // <------ Getter & Setter methods ------>
     
-    // <------ Getter and setter methods ------> 
-    
-    
-    // Getter & setter methods for DankTitles class
-    public static DankTitles getInstance() {
-        return instance;
-    }
-    
-    public void setInstance(DankTitles instance) {
-        this.instance = instance;
-    }
-    
-    
-    // Getter & setter methods for DataHandler
+    // <--- Methods for DataHandler ------>
     public DataHandler getDataHandler() {
-        if (dataHandler == null) {
-            getLogger().severe("getDataHandler() was caled before initialisation. Defaulting to FileHandler");
-            dataHandler = FileHandler.getInstance();
-        }
         return dataHandler;
     }
     
     public void setDataHandler(DataHandler dataHandler) {
         this.dataHandler = dataHandler;
     }
-    
 }

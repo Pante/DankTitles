@@ -6,4 +6,4 @@ players:
       name: player_name
       titles:
         normal:
-          - title_ID
+          - titleID

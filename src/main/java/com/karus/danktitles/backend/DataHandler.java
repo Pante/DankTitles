@@ -16,17 +16,26 @@
  */
 package com.karus.danktitles.backend;
 
+import java.io.IOException;
+
 /**
  *
  * @author PanteLegacy @ karusmc.com
  */
 public interface DataHandler {
     
-    // Method which loads the data either from either the files or database
+    // Method that loads the data from the source
     public void load();
     
+    // Method that saves the data to the source
+    public void save() throws IOException;
     
-    // Method which saves the data either to the files or database
-    public void save();
+    
+    // Method that gets the titles data from the source
+    public <T> T getTitles();
+    
+    // Method that gets the players data from the source
+    public <T> T getPlayers();
+    
     
 }

@@ -16,7 +16,6 @@
  */
 package com.karus.danktitles.listeners;
 
-import com.karus.danktitles.DankTitles;
 import com.karus.danktitles.PreconditionChecker;
 import com.karus.danktitles.menus.CategoryMenu;
 import com.karus.danktitles.menus.TitlesMenu;
@@ -43,7 +42,7 @@ public class CategoryMenuListener implements Listener, PreconditionChecker {
         
         Player player = (Player) event.getWhoClicked();
         
-        if (CategoryMenu.getMenu().containsKey(player.getUniqueId())) {
+        if (event.getInventory().getTitle().contains("Titles - Categories") && CategoryMenu.getMenu().containsKey(player.getUniqueId())) {
             menu = CategoryMenu.getMenu().get(player.getUniqueId());
         }
         else return;

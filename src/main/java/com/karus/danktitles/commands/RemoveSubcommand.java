@@ -23,6 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -75,6 +76,13 @@ public class RemoveSubcommand extends BaseSubcommand {
         
         sender.sendMessage(ChatColor.GOLD + args[1] + " has been stripped of title: " + args[3]);
         
+        if (sender instanceof Player && player.isOnline()) {
+            Player playerSender = (Player) sender;
+            Player playerReciever = (Player) player;
+            if (!playerSender.getName().equals(player.getName())) {
+                playerReciever.sendMessage(ChatColor.GOLD + sender.getName() + " has removed title: " + args[3] + " from you!");
+            }
+        } 
         
         try {
             DankTitles.instance.getDataHandler().save();

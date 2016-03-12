@@ -16,6 +16,7 @@
  */
 package com.karus.danktitles.listeners;
 
+import com.karus.danktitles.DankTitles;
 import com.karus.danktitles.menus.CategoryMenu;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,7 +30,7 @@ public class CategoryMenuClose implements Listener {
     @EventHandler
     
     public void onClose(InventoryCloseEvent e) {
-        if (e.getInventory().getTitle().contains("Titles - Category") && CategoryMenu.getMenu().containsKey(e.getPlayer().getUniqueId())) {
+        if (e.getInventory().getTitle().contains("Titles - Categories") && CategoryMenu.getMenu().containsKey(e.getPlayer().getUniqueId())) {
             CategoryMenu.getMenu().remove(e.getPlayer().getUniqueId());
         }
     }

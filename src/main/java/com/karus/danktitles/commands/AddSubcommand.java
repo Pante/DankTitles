@@ -23,6 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -81,6 +82,14 @@ public class AddSubcommand extends BaseSubcommand {
         fileHandler.getPlayers().set(playerPath, tempList);
             
         sender.sendMessage(ChatColor.GOLD + args[1] + " has been given the title: " + args[3]);
+        
+        if (sender instanceof Player && player.isOnline()) {
+            Player playerSender = (Player) sender;
+            Player playerReciever = (Player) player;
+            if (!playerSender.getName().equals(player.getName())) {
+                playerReciever.sendMessage(ChatColor.GOLD + sender.getName() + " has given title: " + args[3] + " to you!");
+            }
+        } 
         
         
         // Attempts to save to disk

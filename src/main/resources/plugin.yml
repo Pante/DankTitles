@@ -1,6 +1,6 @@
 name: DankTitles
 main: com.karus.danktitles.DankTitles
-version: 1.0.0
+version: 1.0.1
 description: Create dank titles for players
 author: PanteLegacy
 depend: [Vault]

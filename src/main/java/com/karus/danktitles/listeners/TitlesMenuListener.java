@@ -43,7 +43,7 @@ public class TitlesMenuListener implements Listener, PreconditionChecker {
         
         Player player = (Player) event.getWhoClicked();
         
-        if (TitlesMenu.getMenu().containsKey(player.getUniqueId())) {
+        if (event.getInventory().getTitle().contains("Titles - Category") && TitlesMenu.getMenu().containsKey(player.getUniqueId())) {
             menu = TitlesMenu.getMenu().get(player.getUniqueId());
         }
         else return;
@@ -80,6 +80,8 @@ public class TitlesMenuListener implements Listener, PreconditionChecker {
         
         else if (name.equals(ChatColor.translateAlternateColorCodes('&', menu.config.getString("menus.icons.reset.display")))) {
             DankTitles.chat.setPlayerPrefix(player, DankTitles.chat.getGroupPrefix(player.getWorld(), DankTitles.permission.getPrimaryGroup(player)));
+            player.sendMessage(ChatColor.GOLD + "Your title has been reset to your group default!");
+            player.closeInventory();
         }
         
         else if (name.equals(ChatColor.translateAlternateColorCodes('&', menu.config.getString("menus.icons.menu.display")))) {
@@ -117,6 +119,8 @@ public class TitlesMenuListener implements Listener, PreconditionChecker {
                 
         else {
             DankTitles.chat.setPlayerPrefix(player, clicked.getItemMeta().getDisplayName() + " ");
+            player.sendMessage(ChatColor.GOLD + "Your title has been changed to: " + ChatColor.RESET + clicked.getItemMeta().getDisplayName());
+            player.closeInventory();
         }
       
     }

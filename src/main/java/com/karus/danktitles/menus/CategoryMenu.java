@@ -55,16 +55,8 @@ public class CategoryMenu extends BaseMenu {
         
         config = DankTitles.instance.getConfig();
         
-        if (checkCollection(categories)) {
-            
-            if (checkNull(config.getString("danktitles.message.no-categories"))) {
-                player.sendMessage(ChatColor.RED + "There are currently no categories available!");
-            }
-            else {
-                player.sendMessage(parseColouredString(config.getString("danktitles.message.no-categories")));
-            }
-            
-        }
+        if (checkCollection(categories)) return;
+           
         
         if (checkNull(config) || config.contains("menus.category.dynamic-page")) {
             dynamicSize = config.getBoolean("menus.category.dynamic-page");
@@ -103,10 +95,22 @@ public class CategoryMenu extends BaseMenu {
     @Override
     
     // Implementation of method inheritied from BaseMenu, Menu
-    public void display(Player player) {    
+    public void display(Player player) { 
+        
+        if (checkCollection(categories)) {
+            
+            if (checkNull(config.getString("danktitles.message.no-categories"))) {
+                player.sendMessage(ChatColor.RED + "There are currently no categories available!");
+            }
+            else {
+                player.sendMessage(parseColouredString(config.getString("danktitles.message.no-categories")));
+            }
+            
+            return;
+            
+        }
         
         getMenu().put(player.getUniqueId(), this);
-        
         if (pageTotal == 1) {
             
             menu = Bukkit.createInventory(null, pageSize, "§l§2Titles - Categories§r");

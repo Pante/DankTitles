@@ -57,16 +57,7 @@ public class TitlesMenu extends BaseMenu implements Listener {
         
         config = DankTitles.instance.getConfig();
         
-        if (checkCollection(titles)) {
-            
-            if (checkNull(config.getString("danktitles.message.no-titles"))) {
-                player.sendMessage(ChatColor.RED + "There are currently no titles available!");
-            }
-            else {
-                player.sendMessage(parseColouredString(config.getString("danktitles.message.no-titles")));
-            }
-            
-        }
+        if (checkCollection(titles)) return;
         
         if (checkNull(config) || config.contains("menus.titles.dynamic-page")) {
             dynamicSize = config.getBoolean("menus.titles.dynamic-page");
@@ -108,6 +99,19 @@ public class TitlesMenu extends BaseMenu implements Listener {
     
     // Implementation of method inheritied from BaseMenu, Menu
     public void display(Player player) {
+        
+        if (checkCollection(titles)) {
+            
+            if (checkNull(config.getString("danktitles.message.no-titles"))) {
+                player.sendMessage(ChatColor.RED + "There are currently no titles available!");
+            }
+            else {
+                player.sendMessage(parseColouredString(config.getString("danktitles.message.no-titles")));
+            }
+            
+            return;
+            
+        }
         
         getMenu().put(player.getUniqueId(), this);
         

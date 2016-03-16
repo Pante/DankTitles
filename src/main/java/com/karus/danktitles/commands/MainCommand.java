@@ -94,7 +94,7 @@ public class MainCommand implements CommandExecutor, CommandChecker {
     
     // Getter method to get the value of subcommand
     public Subcommand getSubcommand() {
-        return this.subcommand;
+        return subcommand;
     }
     
     

@@ -48,7 +48,7 @@
             <scope>provided</scope>
         </dependency>
         
-        <!-- Vault API -->
+        <!-- Vault -->
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
@@ -59,6 +59,7 @@
     </dependencies>
 
     <build>
+        
         <defaultGoal>clean package install</defaultGoal>
         
         <resources>

@@ -148,9 +148,9 @@ public class FileHandler implements PreconditionChecker, DataHandler{
     // Implementation of method inheritied form DataHandler
     public void save() throws IOException {
 
-            DankTitles.instance.saveConfig();
-            titles.save(titlesFile);
-            players.save(playersFile);
+        DankTitles.instance.saveConfig();
+        titles.save(titlesFile);
+        players.save(playersFile);
 
     }
     

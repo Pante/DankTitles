@@ -7,10 +7,10 @@ depend: [Vault]
 commands:
   danktitles:
     description: Use this command to check the version number and reload the plugin.
-    usage: |
-      /DankTitles
-      /DankTitles [<about|help|reload|save>]
-      /DankTitles [<player>] [<add|remove|reset>] [<category>] [<title>]
+    usage: "|
+        /DankTitles
+        /DankTitles [<about|help|reload|save>]
+        /DankTitles [<player>] [<add|remove|reset>] [<category>] [<title>]"
     aliases: [dt, dtitles]
 permissions:
   danktitles.*:

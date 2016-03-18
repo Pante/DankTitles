@@ -44,13 +44,11 @@ public class HelpSubcommand extends BaseSubcommand {
         // Iterates through the commands 
         sender.sendMessage(ChatColor.GOLD + "DankTitles commands:\n");
         
-        commands.keySet().stream().forEach((String commandName) -> {
+        sender.sendMessage(ChatColor.GOLD 
+                + "Command: /DankTitles"
+                + "\n  Description: " + commands.get("DankTitles").get("Description")
+                + "\n  Usage: \n" + commands.get("DankTitles").get("usage") + "\n");
             
-            sender.sendMessage(ChatColor.GOLD 
-                    + "Command: " + commandName 
-                    + "\nUsage: \n" + commands.get(commandName).get("usage") + "\n");
-            
-        });
         
     }
 }

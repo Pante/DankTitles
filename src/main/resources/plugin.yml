@@ -6,7 +6,7 @@ author: PanteLegacy
 depend: [Vault]
 commands:
   danktitles:
-    description: Use this command to check the version number and reload the plugin.
+    description: Use this to add titles and whatnot
     usage: "|
         /DankTitles
         /DankTitles [<about|help|reload|save>]

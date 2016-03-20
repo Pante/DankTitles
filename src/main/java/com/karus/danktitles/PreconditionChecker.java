@@ -25,12 +25,6 @@ import java.util.Collection;
  */
 public interface PreconditionChecker {
     
-    // Checks if the argument is null and returns true if it is
-    public default <T> boolean checkNull(T object) {
-        return object == null;
-    }
-    
-    
     // Checks if the argument, a Collection is null or if it's empty and returns true if it is
     public default boolean checkCollection(Collection<?> collection) {
         return (collection == null || collection.isEmpty());

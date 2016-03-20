@@ -52,7 +52,7 @@ public class TitlesMenuListener implements Listener, PreconditionChecker {
         event.setCancelled(true);
         
         ItemStack clicked = event.getCurrentItem();
-        if (checkNull(clicked) ||  clicked.getType() == Material.AIR) return;
+        if (clicked == null ||  clicked.getType() == Material.AIR) return;
         
         String name = clicked.getItemMeta().getDisplayName();
         // Blame java for not allowing variables in a switch statment >:(
@@ -68,7 +68,7 @@ public class TitlesMenuListener implements Listener, PreconditionChecker {
                 previousMenu.display((Player) event.getWhoClicked());     
             }
             
-            else if (checkNull(menu.config.getString("menus.messages.first-page"))) {
+            else if (menu.config.getString("menus.messages.first-page") == null) {
                 player.sendMessage(ChatColor.RED + "You're already on the first page!");
             }
             
@@ -99,7 +99,7 @@ public class TitlesMenuListener implements Listener, PreconditionChecker {
                 
                 nextMenu.display(player);
             }
-            else if (checkNull(menu.config.getString("menus.messages.last-page"))) {
+            else if (menu.config.getString("menus.messages.last-page") == null ) {
                 player.sendMessage(ChatColor.RED + "You are already on the last page!");                
             }
             else {
@@ -109,7 +109,7 @@ public class TitlesMenuListener implements Listener, PreconditionChecker {
         }
     
         else if (name.equals(ChatColor.RED + "Invalid display")) {
-            if (checkNull(menu.config.getString("menus.messages.invalid-title"))) {
+            if (menu.config.getString("menus.messages.invalid-title") == null) {
                 player.sendMessage(ChatColor.RED + "Welp! This is embarrassing! You should not be seeing this, please contact the server administrator(s)!");
             }
             else {

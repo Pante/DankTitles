@@ -17,7 +17,7 @@
 package com.karus.danktitles.menus;
 
 import com.karus.danktitles.DankTitles;
-import com.karus.danktitles.backend.FileHandler;
+import com.karus.danktitles.io.FileHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +58,7 @@ public class CategoryMenu extends BaseMenu {
         if (checkCollection(categories)) return;
            
         
-        if (checkNull(config) || config.contains("menus.category.dynamic-page")) {
+        if (config == null || config.contains("menus.category.dynamic-page")) {
             dynamicSize = config.getBoolean("menus.category.dynamic-page");
         }
         
@@ -99,7 +99,7 @@ public class CategoryMenu extends BaseMenu {
         
         if (checkCollection(categories)) {
             
-            if (checkNull(config.getString("danktitles.message.no-categories"))) {
+            if (config.getString("danktitles.message.no-categories") == null) {
                 player.sendMessage(ChatColor.RED + "There are currently no categories available!");
             }
             else {

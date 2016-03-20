@@ -45,7 +45,7 @@ public class RemoveSubcommand extends BaseSubcommand {
         
         
         // Checks if the player specified is invalid and has the title
-        if (checkNull(Bukkit.getOfflinePlayer(args[1]))) {
+        if (Bukkit.getOfflinePlayer(args[1]) == null) {
             sender.sendMessage(ChatColor.RED + "No such player exists!");
             return;
         }
@@ -85,7 +85,7 @@ public class RemoveSubcommand extends BaseSubcommand {
         } 
         
         try {
-            DankTitles.instance.getDataHandler().save();
+            DankTitles.instance.dataHandler.save();
         } catch (IOException e) {
             sender.sendMessage(ChatColor.RED + "Failed to save changes to disk!");
         }

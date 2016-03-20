@@ -40,7 +40,7 @@ public class SaveSubcommand extends BaseSubcommand {
         if (!checkPlayer(sender, "danktitles.save")) return;
         
         try {
-            DankTitles.instance.getDataHandler().save();
+            DankTitles.instance.dataHandler.save();
             sender.sendMessage(ChatColor.GOLD + "DankTitles has been saved.");
         } catch (IOException e) {
             sender.sendMessage(ChatColor.RED + "Failed to save changes to disk!");

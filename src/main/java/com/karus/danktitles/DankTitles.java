@@ -16,8 +16,7 @@
  */
 package com.karus.danktitles;
 
-import com.karus.danktitles.backend.DataHandler;
-import com.karus.danktitles.backend.FileHandler;
+import com.karus.danktitles.io.FileHandler;
 import com.karus.danktitles.commands.MainCommand;
 import com.karus.danktitles.listeners.CategoryMenuClose;
 import com.karus.danktitles.listeners.CategoryMenuListener;
@@ -30,6 +29,7 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import com.karus.danktitles.io.Data;
 
 /**
  *
@@ -44,7 +44,7 @@ public class DankTitles extends JavaPlugin implements PreconditionChecker {
     public static Permission permission = null;
     
     // Fields
-    public DataHandler dataHandler;
+    public Data dataHandler;
             
            
     @Override
@@ -53,8 +53,8 @@ public class DankTitles extends JavaPlugin implements PreconditionChecker {
     public void onEnable() {
         instance = this;
         
-        setDataHandler(FileHandler.getInstance());
-        getDataHandler().load();
+        dataHandler = FileHandler.getInstance();
+        dataHandler.load();
         
         registerVault();
         
@@ -80,8 +80,8 @@ public class DankTitles extends JavaPlugin implements PreconditionChecker {
     // <--- Methods for setting up vault --->
     
     private void registerVault() {
-        if (checkNull(getServer().getPluginManager().getPlugin("Vault")) || !registerVaultChat() || !registerVaultPermissions()) {
-            getLogger().severe(String.format("[%s] - Disabled as Vault dependency could not be found!", getDescription().getName()));
+        if (getServer().getPluginManager().getPlugin("Vault") == null || !registerVaultChat() || !registerVaultPermissions()) {
+            getLogger().severe(" - Disabled as Vault dependency could not be found!");
             getServer().getPluginManager().disablePlugin(this);
         }
     }
@@ -89,7 +89,7 @@ public class DankTitles extends JavaPlugin implements PreconditionChecker {
     // Helper method that registers the Chat component of vault
     private boolean registerVaultChat() {
         RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
-        if (checkNull(rsp)) {
+        if (rsp == null) {
             return false;
         }
         
@@ -100,7 +100,7 @@ public class DankTitles extends JavaPlugin implements PreconditionChecker {
     // Helper method that registers the Permissions component of vault
     private boolean registerVaultPermissions() {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        if (checkNull(rsp)) {
+        if (rsp == null) {
             return false;
         }
         
@@ -128,15 +128,4 @@ public class DankTitles extends JavaPlugin implements PreconditionChecker {
         
     }
     
-    
-    // <------ Getter & Setter methods ------>
-    
-    // <--- Methods for DataHandler ------>
-    public DataHandler getDataHandler() {
-        return dataHandler;
-    }
-    
-    public void setDataHandler(DataHandler dataHandler) {
-        this.dataHandler = dataHandler;
-    }
 }

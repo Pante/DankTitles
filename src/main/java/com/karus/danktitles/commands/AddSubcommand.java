@@ -46,7 +46,7 @@ public class AddSubcommand extends BaseSubcommand {
         
         
         // Checks if the player is valid
-        if (checkNull(Bukkit.getOfflinePlayer(args[1]))) {
+        if (Bukkit.getOfflinePlayer(args[1]) == null) {
             sender.sendMessage(ChatColor.RED + "No such player exists!");
             return;
         }
@@ -94,7 +94,7 @@ public class AddSubcommand extends BaseSubcommand {
         
         // Attempts to save to disk
         try {
-            DankTitles.instance.getDataHandler().save();
+            DankTitles.instance.dataHandler.save();
         } catch (IOException e) {
             sender.sendMessage(ChatColor.RED + "Failed to save changes to disk!");
         }

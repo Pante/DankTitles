@@ -42,7 +42,7 @@ public class SetSubcommand extends BaseSubcommand {
         
         
         // Checks if the player is valid
-        if (checkNull(Bukkit.getPlayer(args[1]))) {
+        if (Bukkit.getPlayer(args[1]) == null) {
             sender.sendMessage(ChatColor.RED + "No such player exists!");
             return;
         }

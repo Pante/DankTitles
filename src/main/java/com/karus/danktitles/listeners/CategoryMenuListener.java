@@ -51,7 +51,7 @@ public class CategoryMenuListener implements Listener, PreconditionChecker {
         
         ItemStack clicked = event.getCurrentItem();
         
-        if (checkNull(clicked) ||  clicked.getType() == Material.AIR) return;
+        if (clicked == null ||  clicked.getType() == Material.AIR) return;
         
         String name = clicked.getItemMeta().getDisplayName();
         
@@ -67,7 +67,7 @@ public class CategoryMenuListener implements Listener, PreconditionChecker {
                 
                 previousMenu.display((Player) event.getWhoClicked());
             }
-            else if (checkNull(menu.config.getString("menus.messages.first-page"))) {
+            else if (menu.config.getString("menus.messages.first-page") == null ) {
                 player.sendMessage(ChatColor.RED + "You're already on the first page!");
             }
             else {
@@ -85,7 +85,7 @@ public class CategoryMenuListener implements Listener, PreconditionChecker {
                 
                 nextMenu.display((Player) event.getWhoClicked());
             }
-            else if (checkNull(menu.config.getString("menus.messages.last-page"))) {
+            else if (menu.config.getString("menus.messages.last-page") == null) {
                 player.sendMessage(ChatColor.RED + "You are already on the last page!");                
             }
             else {
@@ -95,7 +95,7 @@ public class CategoryMenuListener implements Listener, PreconditionChecker {
         }
         
         else if (name.equals(ChatColor.RED + "Invalid display")) {
-            if (checkNull(menu.config.getString("menus.messages.invalid-title"))) {
+            if (menu.config.getString("menus.messages.invalid-title") == null) {
                 player.sendMessage(ChatColor.RED + "Welp! This is embarrassing! You should not be seeing this, please contact the server administrator(s)!");
             }
             else {

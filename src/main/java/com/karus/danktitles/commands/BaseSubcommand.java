@@ -18,7 +18,7 @@ package com.karus.danktitles.commands;
 
 import com.karus.danktitles.DankTitles;
 import com.karus.danktitles.PreconditionChecker;
-import com.karus.danktitles.backend.FileHandler;
+import com.karus.danktitles.io.FileHandler;
 
 /**
  *
@@ -27,7 +27,7 @@ import com.karus.danktitles.backend.FileHandler;
 public abstract class BaseSubcommand implements Subcommand, CommandChecker, PreconditionChecker {
     
     // Fields
-    protected FileHandler fileHandler = (FileHandler) DankTitles.instance.getDataHandler();
+    protected FileHandler fileHandler = (FileHandler) DankTitles.instance.dataHandler;
     
     // Used to ensure that all sub-classes have access to utility methods and will implement execute()
     

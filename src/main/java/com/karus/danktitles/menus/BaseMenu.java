@@ -16,7 +16,6 @@
  */
 package com.karus.danktitles.menus;
 
-import com.karus.danktitles.DankTitles;
 import com.karus.danktitles.PreconditionChecker;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,7 @@ public abstract class BaseMenu implements Menu, MenuUtility, PreconditionChecker
         
         Material material = Material.STONE;
         
-        if (!checkNull(config.getString(path + ".item"))) {
+        if (config.getString(path + ".item") == null) {
             material = Material.getMaterial(config.getString(path + ".item"));
         }
         
@@ -60,7 +59,7 @@ public abstract class BaseMenu implements Menu, MenuUtility, PreconditionChecker
     public ItemStack generateItemMeta(FileConfiguration config, String path, ItemStack item) {
         
         itemMeta = item.getItemMeta();
-        if (checkNull(config.getString(path + ".display"))) {
+        if (config.getString(path + ".display") == null) {
             itemMeta.setDisplayName(ChatColor.RED + "Invalid display");
         }
         else {

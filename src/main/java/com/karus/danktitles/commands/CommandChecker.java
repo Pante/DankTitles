@@ -53,10 +53,4 @@ public interface CommandChecker {
 
     }
     
-    
-    // Method that checks if the arguments specified are valid, returns true if valid
-    public default boolean validateArguments(String[] args) {
-        return false;
-    }
-    
 }

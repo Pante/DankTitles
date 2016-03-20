@@ -38,8 +38,8 @@ public class ReloadSubcommand extends BaseSubcommand {
         if (!checkPlayer(sender, "danktitles.reload")) return;
         
         try {
-            DankTitles.instance.getDataHandler().load();
-            DankTitles.instance.getDataHandler().save();
+            DankTitles.instance.dataHandler.load();
+            DankTitles.instance.dataHandler.save();
             sender.sendMessage(ChatColor.GOLD + "Successfully reloaded DankTitles");
         } catch (IOException e) {
             sender.sendMessage(ChatColor.RED + "Failed to save changes to disk!");

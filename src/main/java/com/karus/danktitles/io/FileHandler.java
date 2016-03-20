@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.karus.danktitles.backend;
+package com.karus.danktitles.io;
 
 import com.karus.danktitles.DankTitles;
 import com.karus.danktitles.PreconditionChecker;
@@ -29,11 +29,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class FileHandler implements PreconditionChecker, DataHandler{
+public class FileHandler implements PreconditionChecker, Data{
     
     // Fields
-    private File configFile = null, titlesFile = null, playersFile = null;
-    private YamlConfiguration titles = null, players = null;
+    private File configFile, titlesFile, playersFile;
+    private YamlConfiguration titles, players;
     
     
     // Singleton Implementation
@@ -61,7 +61,7 @@ public class FileHandler implements PreconditionChecker, DataHandler{
     // Helper method for load() which creates & loads the config file
     private void loadConfig() {
         
-        if (checkNull(configFile)) {
+        if (configFile == null) {
             configFile = new File(DankTitles.instance.getDataFolder(), "config.yml");
         }
         if (!configFile.exists()) {
@@ -76,7 +76,7 @@ public class FileHandler implements PreconditionChecker, DataHandler{
     // Helper method for load() which creates & loads the titles file
     private void loadTitles() {
         
-        if (checkNull(titlesFile)) {
+        if (titlesFile == null) {
             titlesFile = new File(DankTitles.instance.getDataFolder(), "titles.yml");
         }
         if (titlesFile.exists()) {
@@ -110,7 +110,7 @@ public class FileHandler implements PreconditionChecker, DataHandler{
     // Helper method for load() which creates & loads the players file
     private void loadPlayers() {
         
-        if (checkNull(playersFile)) {
+        if (playersFile == null) {
             playersFile = new File(DankTitles.instance.getDataFolder(), "players.yml");
         }
         if (playersFile.exists()) {
@@ -161,7 +161,7 @@ public class FileHandler implements PreconditionChecker, DataHandler{
     
     // Implementation of method inheritied from DataHandler
     public YamlConfiguration getTitles() {
-        if (checkNull(titles)) {
+        if (titles == null) {
             load();
         }
         return titles;
@@ -171,7 +171,7 @@ public class FileHandler implements PreconditionChecker, DataHandler{
     
     // Implementation of method inheritied from DataHandler
     public YamlConfiguration getPlayers() {
-        if (checkNull(players)) {
+        if (players == null) {
             load();
         }
         return players;

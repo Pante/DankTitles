@@ -1,6 +1,6 @@
 name: DankTitles
 main: com.karus.danktitles.DankTitles
-version: 1.0.1
+version: 1.0.2
 description: Create dank titles for players
 author: PanteLegacy
 depend: [Vault]
@@ -12,30 +12,48 @@ commands:
         /DankTitles [<about|help|reload|save>]
         /DankTitles [<player>] [<add|remove|reset>] [<category>] [<title>]"
     aliases: [dt, dtitles]
+    
 permissions:
   danktitles.*:
     description: Gives access to all danktitles commands.
+    default: false
+    childeren:
+      danktitles.about: true
+      danktitles.help: true
+      danktitles.reload: true
+      danktitles.reset: true
+      danktitles.save: true
+      danktitles.titles: true
+      danktitles.remove: true
+      
   danktitles.about:
     description: Allows players to view the version of the plugin
-    default: op
+    default: false
+    
   danktitles.help:
     description: Allows players to view a list of plugin commands
-    default: not op
+    default: false
+    
   danktitles.reload:
     description: Allows players to force-reload the plugin
-    default: op
+    default: false
+    
   danktitles.reset:
     description: Allows players to reset their titles back to their group defaults
-    default: not op  
+    default: false 
+    
   danktitles.save:
     description: Allows players to force-save the plugin
-    default: op
+    default: false
+    
   danktitles.titles:
     description: Allows players to open a GUI menu of all the titles they own
-    default: not op
+    default: false
+    
   danktitles.add:
     description: Allows access to giving a player a title that is defined in titles.yml
-    default: op
+    default: false
+    
   danktitles.remove:
     description: Allows access to removing a player's title defined in players.yml
-    default: op
+    default: false

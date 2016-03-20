@@ -38,8 +38,8 @@ public class MainCommand implements CommandExecutor, CommandChecker {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         
         if (args.length == 0) {
-            setSubcommand(new MenuSubcommand());
-            getSubcommand().execute(sender, args);
+            subcommand = new MenuSubcommand();
+            subcommand.execute(sender, args);
             return true;
         }
         
@@ -50,31 +50,31 @@ public class MainCommand implements CommandExecutor, CommandChecker {
         switch(args[0].toLowerCase()) {
             
             case "about":
-                setSubcommand(new AboutSubcommand());
+                subcommand = new AboutSubcommand();
                 break;
 
             case "help":
-                setSubcommand(new HelpSubcommand());
+                subcommand = new HelpSubcommand();
                 break;
 
             case "reload":
-                setSubcommand(new ReloadSubcommand());
+                subcommand = new ReloadSubcommand();
                 break;
             
             case "save":
-                setSubcommand(new SaveSubcommand());
+                subcommand = new SaveSubcommand();
                 break;
                 
             case "set":
-                setSubcommand(new SetSubcommand());
+                subcommand = new SetSubcommand();
                 break;
 
             case "add":
-                setSubcommand(new AddSubcommand());
+                subcommand = new AddSubcommand();
                 break;
 
             case "remove":
-                setSubcommand(new RemoveSubcommand());
+                subcommand = new RemoveSubcommand();
                 break;
 
             default:
@@ -83,24 +83,10 @@ public class MainCommand implements CommandExecutor, CommandChecker {
                 
         }
         
-        getSubcommand().execute(sender, args);
+        subcommand.execute(sender, args);
         
         return true;
         
-    }
-    
-    
-    // <------ Getter & Setter Methods ------>
-    
-    // Getter method to get the value of subcommand
-    public Subcommand getSubcommand() {
-        return subcommand;
-    }
-    
-    
-    // Setter method which sets the value of subcommand
-    public void setSubcommand(Subcommand subcommand) {
-        this.subcommand = subcommand;
     }
     
 }

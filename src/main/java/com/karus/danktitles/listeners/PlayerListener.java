@@ -17,7 +17,7 @@
 package com.karus.danktitles.listeners;
 
 import com.karus.danktitles.DankTitles;
-import com.karus.danktitles.backend.FileHandler;
+import com.karus.danktitles.io.FileHandler;
 import java.io.IOException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;

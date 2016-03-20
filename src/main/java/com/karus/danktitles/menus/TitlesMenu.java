@@ -17,7 +17,7 @@
 package com.karus.danktitles.menus;
 
 import com.karus.danktitles.DankTitles;
-import com.karus.danktitles.backend.FileHandler;
+import com.karus.danktitles.io.FileHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +59,7 @@ public class TitlesMenu extends BaseMenu implements Listener {
         
         if (checkCollection(titles)) return;
         
-        if (checkNull(config) || config.contains("menus.titles.dynamic-page")) {
+        if (config == null || config.contains("menus.titles.dynamic-page")) {
             dynamicSize = config.getBoolean("menus.titles.dynamic-page");
         }
         
@@ -102,7 +102,7 @@ public class TitlesMenu extends BaseMenu implements Listener {
         
         if (checkCollection(titles)) {
             
-            if (checkNull(config.getString("danktitles.message.no-titles"))) {
+            if (config.getString("danktitles.message.no-titles") == null) {
                 player.sendMessage(ChatColor.RED + "There are currently no titles available!");
             }
             else {

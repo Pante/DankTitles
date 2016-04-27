@@ -17,163 +17,81 @@
 package com.karus.danktitles.io;
 
 import com.karus.danktitles.DankTitles;
-import com.karus.danktitles.PreconditionChecker;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class FileHandler implements PreconditionChecker, Data{
+public class FileHandler {
+    
+    // Private constructor to prevent instantiation
+    private FileHandler() {}
     
     // Fields
-    private File configFile, titlesFile, playersFile;
-    private YamlConfiguration titles, players;
+    private static final HashMap<String, HashMap<String, ItemStack>> titles = new HashMap<>();
+    private static YamlConfiguration players;
     
     
-    // Singleton Implementation
-    private static FileHandler instance;
-    private FileHandler() {}
-    public static FileHandler getInstance() {
-        if (instance == null) {
-            instance = new FileHandler();
-        }
-        return instance;
-    }
-    
-    
-    @Override
-    
-    // Implementation of method inheritied from DataHandler, loads the data from files
-    public void load() {
-        
-        loadConfig();
-        loadTitles();
-        loadPlayers();
+    public static void load() {
         
     }
     
-    // Helper method for load() which creates & loads the config file
-    private void loadConfig() {
+    
+    public static void save() throws IOException {
+
+    DankTitles.instance.saveConfig();
+
+    }
         
-        if (configFile == null) {
-            configFile = new File(DankTitles.instance.getDataFolder(), "config.yml");
-        }
-        if (!configFile.exists()) {
-            DankTitles.instance.getLogger().info("config.yml could not be found... creating file");
+        
+    // Helper method which creates & loads the config file
+    public static void loadDefaultConfig(Output<String> out) {
+        if (!new File(DankTitles.instance.getDataFolder(), "config.yml").exists()) {
+            out.out("config.yml not found, creating!");
             DankTitles.instance.saveDefaultConfig();
         }
-        
-        DankTitles.instance.reloadConfig();
-        
-    }
-    
-    // Helper method for load() which creates & loads the titles file
-    private void loadTitles() {
-        
-        if (titlesFile == null) {
-            titlesFile = new File(DankTitles.instance.getDataFolder(), "titles.yml");
-        }
-        if (titlesFile.exists()) {
-            titles = YamlConfiguration.loadConfiguration(titlesFile);
-        }
         else {
-            DankTitles.instance.getLogger().info("titles.yml could not be found... creating file"); 
-        
-            try {
-
-                Reader inputStream = new InputStreamReader(DankTitles.instance.getResource("titles.yml"), "UTF-8");
-                titles = YamlConfiguration.loadConfiguration(inputStream);
-                titles.save(titlesFile);
-
-            } catch (UnsupportedEncodingException e) {
-
-                DankTitles.instance.getLogger().severe("Unable to retrieve resource: titles.yml" );
-                e.printStackTrace();
-                DankTitles.instance.getServer().getPluginManager().disablePlugin(DankTitles.instance);
-
-            } catch (IOException e) {
-                
-                DankTitles.instance.getLogger().severe("Failed to save titles.yml to disk");
-                e.printStackTrace();
-                DankTitles.instance.getServer().getPluginManager().disablePlugin(DankTitles.instance);
-                
-            }
+            out.out(ChatColor.GOLD + "config.yml found, loading!");
         }
     }
     
-    // Helper method for load() which creates & loads the players file
-    private void loadPlayers() {
+    // Helper method which creates & loads the titles file
+    public static YamlConfiguration getConfig(File file) throws IOException {
         
-        if (playersFile == null) {
-            playersFile = new File(DankTitles.instance.getDataFolder(), "players.yml");
-        }
-        if (playersFile.exists()) {
-            players = YamlConfiguration.loadConfiguration(playersFile);
-        }
-        else {
-            DankTitles.instance.getLogger().info("players.yml could not be found... creating file"); 
+        YamlConfiguration config;
         
-            try {
-
-                Reader inputStream = new InputStreamReader(DankTitles.instance.getResource("players.yml"), "UTF-8");
-                players = YamlConfiguration.loadConfiguration(inputStream);
-                players.save(playersFile);
+        if (file.exists()) {
+            config = YamlConfiguration.loadConfiguration(file);
+        } else {
+            Reader inputStream = new InputStreamReader(DankTitles.instance.getResource(file.getName()), "UTF-8");
                 
-            } catch (UnsupportedEncodingException e) {
-
-                DankTitles.instance.getLogger().severe("Unable to retrieve resource: players.yml" );
-                e.printStackTrace();
-                DankTitles.instance.getServer().getPluginManager().disablePlugin(DankTitles.instance);
-                
-            } catch (IOException e) {
-                
-                DankTitles.instance.getLogger().severe("Failed to save players.yml to disk");
-                e.printStackTrace();
-                DankTitles.instance.getServer().getPluginManager().disablePlugin(DankTitles.instance);
-                
-            }
-        }
+            config = YamlConfiguration.loadConfiguration(inputStream);
+            config.save(file);
+        }     
         
-    }
-    
-    
-    @Override
-    
-    // Implementation of method inheritied form DataHandler
-    public void save() throws IOException {
-
-        DankTitles.instance.saveConfig();
-        titles.save(titlesFile);
-        players.save(playersFile);
-
+        return config;
     }
     
     
     // <------ Getter & Setter methods ------>
     
-    @Override
     
     // Implementation of method inheritied from DataHandler
-    public YamlConfiguration getTitles() {
-        if (titles == null) {
-            load();
-        }
+    public HashMap<String, HashMap<String, ItemStack>> getTitles() {
         return titles;
     }
     
-    @Override
     
-    // Implementation of method inheritied from DataHandler
     public YamlConfiguration getPlayers() {
-        if (players == null) {
-            load();
-        }
         return players;
     }
 }

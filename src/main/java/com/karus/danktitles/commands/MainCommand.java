@@ -16,6 +16,10 @@
  */
 package com.karus.danktitles.commands;
 
+import com.karus.danktitles.DankTitles;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,65 +29,34 @@ import org.bukkit.command.CommandSender;
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class MainCommand implements CommandExecutor, CommandChecker {
+public class MainCommand implements CommandExecutor {
     
-    // <------ Fields ------>
+    // Fields
+    private HashMap<String, Subcommand> subcommands = new HashMap<>();
+
     
-    // Interface that all subcommands implement
-    private Subcommand subcommand;
+    // Registers the method in the hashmap
+    public void registerSubcommand(String fullCommmandName, Subcommand subcommand) {
+        
+        new ArrayList<>((List<String>) DankTitles.instance.getDescription()
+            .getCommands().get(fullCommmandName).get("aliases"))
+            .stream().forEach(alias -> {
+                subcommands.put(alias, subcommand);
+            });
+        
+    }
     
-     @Override
     
-    // Implementation of onCommand() inheritied from CommandExectuor
+    @Override
+    
+    // Implementation of method from CommandExecutor
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         
-        if (args.length == 0) {
-            subcommand = new MenuSubcommand();
-            subcommand.execute(sender, args);
-            return true;
+        if (args.length == 0 || subcommands.get(args[0]) == null) {
+            sender.sendMessage(ChatColor.RED + "Invalid argument. Type \"/dt help\" for a list of commands.");     
+        } else {
+            subcommands.get(args[0]).execute(sender, args);
         }
-        
-        
-        // Methods setSubcommand(), getSubcommand() and execute() inheritied from BaseCommand and Subcommand respectively
-        // subcommand has a type of Subcommand (interface)
-            
-        switch(args[0].toLowerCase()) {
-            
-            case "about":
-                subcommand = new AboutSubcommand();
-                break;
-
-            case "help":
-                subcommand = new HelpSubcommand();
-                break;
-
-            case "reload":
-                subcommand = new ReloadSubcommand();
-                break;
-            
-            case "save":
-                subcommand = new SaveSubcommand();
-                break;
-                
-            case "set":
-                subcommand = new SetSubcommand();
-                break;
-
-            case "add":
-                subcommand = new AddSubcommand();
-                break;
-
-            case "remove":
-                subcommand = new RemoveSubcommand();
-                break;
-
-            default:
-                sender.sendMessage(ChatColor.RED + "Unknown argument: " + args[0] + " specified.");
-                return true;
-                
-        }
-        
-        subcommand.execute(sender, args);
         
         return true;
         

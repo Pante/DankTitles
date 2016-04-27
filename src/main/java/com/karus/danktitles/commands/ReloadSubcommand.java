@@ -25,17 +25,16 @@ import org.bukkit.command.CommandSender;
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class ReloadSubcommand extends BaseSubcommand {
+public class ReloadSubcommand implements Subcommand, CommandChecker {
     
     @Override
     
-    // Implementation of method inheritied from BaseSubcommand, Subcommand
     // Subcommand used to reload the plugin
     public void execute(CommandSender sender, String[] args) {
         
         // Methods inheritied from BaseSubcommand, CommandChecker
-        if (!checkArgumentNumber(sender, args, 1, 1)) return;
-        if (!checkPlayer(sender, "danktitles.reload")) return;
+        if (!checkLength(sender, args, 1, 1)) return;
+        if (!checkSender(sender, "danktitles.reload")) return;
         
         try {
             DankTitles.instance.dataHandler.load();

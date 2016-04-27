@@ -26,31 +26,42 @@ import org.bukkit.entity.Player;
  */
 public interface CommandChecker {
     
-    // Method that checks if the sender is a player and if he has the needed permissions
-    public default boolean checkPlayer(CommandSender sender, String permission) {
+    // Checks if the player
+    public default boolean checkSender(CommandSender sender, String permission) {
 
-        if (!(sender instanceof Player)) return true;
-
-        Player player = (Player) sender;
-
-        if (player.hasPermission(permission)) return true;
+        if (sender.hasPermission(permission)) return true;
         else {
-            player.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+            sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
             return false;
-        }
+}
 
     }
+    
+    // Checks if the sender is a player and returns false if not
+    public default boolean checkPlayer(CommandSender sender, String permission) {
+       
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("This is a player only command.");
+            return false;
+        }
+        
+        if (sender.hasPermission(permission)) return true;
+        else {
+            sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+            return false;
+        }
+        
+    }
+    
 
 
-    // Method that checks if the number of arguments specified are valid
-    public default boolean checkArgumentNumber(CommandSender sender, String[] args, int min, int max) {
-
+    // Checks if the number of arguments specified are valid
+    public default boolean checkLength(CommandSender sender, String[] args, int min, int max) {
         if (args.length < min || args.length > max) {
-            sender.sendMessage(ChatColor.RED + "Invalid number of arguments specified.");
+            sender.sendMessage(ChatColor.RED + "Invalid number of arguments.");
             return false;
         }
         else return true;
-
     }
     
 }

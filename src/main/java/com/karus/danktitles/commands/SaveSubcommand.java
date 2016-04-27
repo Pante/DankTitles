@@ -25,7 +25,7 @@ import org.bukkit.command.CommandSender;
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class SaveSubcommand extends BaseSubcommand {
+public class SaveSubcommand implements Subcommand, CommandChecker {
     
     // Inherities FileHandler fileHandler from BaseSubcommand
     
@@ -36,7 +36,7 @@ public class SaveSubcommand extends BaseSubcommand {
     public void execute(CommandSender sender, String[] args) {
         
         // Methods inheritied from BaseSubcommand, CommandChecker
-        if (!checkArgumentNumber(sender, args, 1, 1)) return;
+        if (!checkLength(sender, args, 1, 1)) return;
         if (!checkPlayer(sender, "danktitles.save")) return;
         
         try {

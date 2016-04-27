@@ -29,20 +29,17 @@ import org.bukkit.entity.Player;
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class AddSubcommand extends BaseSubcommand {
-    
-    // Inherities FileHandler fileHandler from BaseSubcommand
+public class AddSubcommand implements Subcommand, CommandChecker {
     
     @Override
     
-    // Implementation of method inheritied from BaseSubcommand, Subcommand
     // Subcommand gives the specified title to the player
     public void execute(CommandSender sender, String[] args) {
         
         
         // Methods inheritied from BaseSubcommand, CommandChecker
-        if (!checkArgumentNumber(sender, args, 4, 4)) return;
-        if (!checkPlayer(sender, "danktitles.add")) return;
+        if (!checkLength(sender, args, 4, 4)) return;
+        if (!checkSender(sender, "danktitles.add")) return;
         
         
         // Checks if the player is valid

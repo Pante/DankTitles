@@ -26,7 +26,7 @@ import org.bukkit.entity.Player;
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class MenuSubcommand extends BaseSubcommand {
+public class MenuSubcommand implements Subcommand, CommandChecker {
     
     private Menu menu;
     
@@ -38,7 +38,7 @@ public class MenuSubcommand extends BaseSubcommand {
         
         
         // Methods inheritied from BaseSubcommand, CommandChecker
-        if (!checkArgumentNumber(sender, args, 0, 0)) return;
+        if (!checkLength(sender, args, 0, 0)) return;
         if (!checkPlayer(sender, "danktitles.titles")) return;
         Player player = (Player) sender;
         

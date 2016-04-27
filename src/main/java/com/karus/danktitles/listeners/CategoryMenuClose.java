@@ -16,7 +16,6 @@
  */
 package com.karus.danktitles.listeners;
 
-import com.karus.danktitles.DankTitles;
 import com.karus.danktitles.menus.CategoryMenu;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

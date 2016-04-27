@@ -26,19 +26,16 @@ import org.bukkit.entity.Player;
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class SetSubcommand extends BaseSubcommand {
-    
-    // Inherities FileHandler fileHandler from BaseSubcommand
+public class SetSubcommand implements Subcommand, CommandChecker {
     
     @Override
     
-    // Implementaiton of method inheritied from BaseSubcommand, Subcommand
     // Subcommand force-sets a player's title back to group default
     public void execute(CommandSender sender, String[] args) {
         
         // Methods inheritied from BaseSubcommand, CommandChecker
-        if (!checkArgumentNumber(sender, args, 2, 4)) return;
-        if (!checkPlayer(sender, "danktitles.set")) return;
+        if (!checkLength(sender, args, 2, 4)) return;
+        if (!checkSender(sender, "danktitles.set")) return;
         
         
         // Checks if the player is valid

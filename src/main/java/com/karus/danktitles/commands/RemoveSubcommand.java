@@ -29,19 +29,18 @@ import org.bukkit.entity.Player;
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class RemoveSubcommand extends BaseSubcommand {
+public class RemoveSubcommand implements Subcommand, CommandChecker {
     
     // Inherities FileHandler fileHandler from BaseSubcommand
     
     @Override
     
-    // Implementation of method inheritied from BaseSubcommand and Subcommand
     // Subcommand removes the title from a player
     public void execute(CommandSender sender, String[] args) {
 
         // Methods inherited from BaseSubcommand, CommandChecker
-        if (!checkArgumentNumber(sender, args, 4, 4)) return;
-        if (!checkPlayer(sender, "danktitles.remove")) return;
+        if (!checkLength(sender, args, 4, 4)) return;
+        if (!checkSender(sender, "danktitles.remove")) return;
         
         
         // Checks if the player specified is invalid and has the title

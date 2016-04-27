@@ -16,8 +16,12 @@
  */
 package com.karus.danktitles.commands;
 
-import java.util.Map;
-import static org.bukkit.Bukkit.getPluginManager;
+import com.karus.danktitles.DankTitles;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -25,30 +29,77 @@ import org.bukkit.command.CommandSender;
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class HelpSubcommand extends BaseSubcommand {
+public class HelpSubcommand implements Subcommand, CommandChecker {
+    
+    // Fields
+    private LinkedHashMap<String, MutablePair<String, String>> commands;
+    private final int SIZE = 3;
+    private int page;
+    
+    public HelpSubcommand() {
+        
+        commands = new LinkedHashMap<>(DankTitles.instance.getDescription().getCommands().entrySet().stream()
+            .collect(Collectors.toMap((e) -> e.getKey(), (e) -> 
+                new MutablePair<>((String) e.getValue().get("permission"), (String) e.getValue().get("usage"))
+            )));
+                 
+    }
     
     @Override
     
-    // Implementation of method inheirited from BaseSubcommand and Subcommand
-    // Subcommand returns a list of commands and their respective usages
+    // Implementation of method inherited from Subcommand
+    // Subcommand lists the plugin's commands
     public void execute(CommandSender sender, String[] args) {
         
-        // Methods inheritied from BaseSubcommand, CommandChecker
-        if (!checkArgumentNumber(sender, args, 1, 1)) return;
-        if (!checkPlayer(sender, "danktitles.help")) return;
+        // Methods inheritied from CommandChecker
+        if (!checkLength(sender, args, 1, 3)) return;
+        if (!checkSender(sender, "customkits.core.help")) return;
         
         
-        Map<String, Map<String, Object>> commands = getPluginManager().getPlugin("DankTitles").getDescription().getCommands();
+        LinkedHashMap<String, MutablePair<String, String>> parsedCommands;
+        
+        // Checks if the list needs to be filtered
+        if (args.length == 1 || args[1].equals("all")) {
+            parsedCommands = new LinkedHashMap<>(commands.entrySet().stream()
+                .filter(entry -> sender.hasPermission(entry.getValue().getLeft()))
+                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue())));
+        } else {
+            parsedCommands = new LinkedHashMap<>(commands.entrySet().stream()
+                .filter(entry -> entry.getKey().contains(args[1]) && sender.hasPermission(entry.getValue().getLeft()))
+                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue())));
+        }
+        
+        if (parsedCommands.isEmpty()) {
+            sender.sendMessage(ChatColor.RED + "No matches found.");
+            return;
+        }
+        
+        if (args.length == 3) {
+            try {
+                page = Integer.parseInt(args[2]);
+            } catch (NumberFormatException e) {
+                sender.sendMessage(ChatColor.RED + "Invalid page number!");
+                return;
+            }
+        } else {
+            page = 1;
+        }
+        
+        int totalPages = (int) Math.max(1, Math.floor(parsedCommands.size() / SIZE));
+        
+        if (page <= 0 || page > totalPages) {
+            sender.sendMessage(ChatColor.RED + "Invalid page number!");
+            return;
+        }
+        
+        sender.sendMessage(ChatColor.GOLD + "[Commands - (" + ChatColor.RED + page + "/" + totalPages + ChatColor.GOLD + ") ]" );
         
         
-        // Iterates through the commands 
-        sender.sendMessage(ChatColor.GOLD + "DankTitles commands:\n");
+        ArrayList<String> keys = new ArrayList<>(parsedCommands.keySet());
         
-        sender.sendMessage(ChatColor.GOLD 
-                + "Command: /DankTitles"
-                + "\n  Description: " + commands.get("DankTitles").get("Description")
-                + "\n  Usage: \n" + commands.get("DankTitles").get("usage") + "\n");
-            
+        IntStream.range(page * SIZE - SIZE, parsedCommands.size()).limit(SIZE)
+        .forEach(i -> sender.sendMessage(ChatColor.GOLD + commands.get(keys.get(i)).getRight()));
         
     }
+    
 }

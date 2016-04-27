@@ -16,36 +16,28 @@
  */
 package com.karus.danktitles;
 
+import com.karus.danktitles.commands.*;
 import com.karus.danktitles.io.FileHandler;
-import com.karus.danktitles.commands.MainCommand;
-import com.karus.danktitles.listeners.CategoryMenuClose;
-import com.karus.danktitles.listeners.CategoryMenuListener;
-import com.karus.danktitles.listeners.PlayerListener;
-import com.karus.danktitles.listeners.TitlesMenuClose;
-import com.karus.danktitles.listeners.TitlesMenuListener;
-import com.karus.danktitles.menus.CategoryMenu;
-import com.karus.danktitles.menus.TitlesMenu;
+import com.karus.danktitles.listeners.*;
+import com.karus.danktitles.menus.*;
+
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
+
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.karus.danktitles.io.Data;
 
 /**
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class DankTitles extends JavaPlugin implements PreconditionChecker {
+public class DankTitles extends JavaPlugin{
     
     // Static fields
     public static DankTitles instance;
     
     public static Chat chat = null;
-    public static Permission permission = null;
-    
-    // Fields
-    public Data dataHandler;
-            
+    public static Permission permission = null;        
            
     @Override
     
@@ -53,8 +45,7 @@ public class DankTitles extends JavaPlugin implements PreconditionChecker {
     public void onEnable() {
         instance = this;
         
-        dataHandler = FileHandler.getInstance();
-        dataHandler.load();
+        FileHandler.load();
         
         registerVault();
         
@@ -80,14 +71,16 @@ public class DankTitles extends JavaPlugin implements PreconditionChecker {
     // <--- Methods for setting up vault --->
     
     private void registerVault() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null || !registerVaultChat() || !registerVaultPermissions()) {
-            getLogger().severe(" - Disabled as Vault dependency could not be found!");
+        if (getServer().getPluginManager().getPlugin("Vault") == null || !registerChat()) {
+            getLogger().severe("Disabled as Vault dependency could not be found.");
             getServer().getPluginManager().disablePlugin(this);
+        } else {
+            registerPermissions();
         }
     }
     
     // Helper method that registers the Chat component of vault
-    private boolean registerVaultChat() {
+    private boolean registerChat() {
         RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
         if (rsp == null) {
             return false;
@@ -98,7 +91,7 @@ public class DankTitles extends JavaPlugin implements PreconditionChecker {
     }
     
     // Helper method that registers the Permissions component of vault
-    private boolean registerVaultPermissions() {
+    private boolean registerPermissions() {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
         if (rsp == null) {
             return false;
@@ -111,7 +104,17 @@ public class DankTitles extends JavaPlugin implements PreconditionChecker {
     
     // Method that registers the commands
     public void registerCommands() {
-        getCommand("DankTitles").setExecutor(new MainCommand());
+        MainCommand command = new MainCommand();
+        
+        command.registerSubcommand("danktitles about", new AboutSubcommand());
+        command.registerSubcommand("danktitles help", new HelpSubcommand());
+        command.registerSubcommand("danktitles menu", new MenuSubcommand());
+        command.registerSubcommand("danktitles reload", new ReloadSubcommand());
+        command.registerSubcommand("danktitles save", new SaveSubcommand());
+        command.registerSubcommand("danktitles set", new SetSubcommand());
+        
+        getCommand("DankTitles").setExecutor(command);
+        
     }
     
     

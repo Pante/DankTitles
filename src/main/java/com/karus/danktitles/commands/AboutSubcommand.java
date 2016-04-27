@@ -16,7 +16,7 @@
  */
 package com.karus.danktitles.commands;
 
-import static org.bukkit.Bukkit.getPluginManager;
+import com.karus.danktitles.DankTitles;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -24,25 +24,24 @@ import org.bukkit.command.CommandSender;
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class AboutSubcommand extends BaseSubcommand {
+public class AboutSubcommand implements Subcommand, CommandChecker {
     
     @Override
     
-    // Implementation of execute() inheritied from BaeSubcommand and Subcommand
     // Subcommand returns general information about the plugin
     public void execute(CommandSender sender, String[] args) {
         
-        // Methods inheritied from BaseSubcommand, CommandChecker
-        if (!checkArgumentNumber(sender, args, 1, 1)) return;
-        if (!checkPlayer(sender, "danktitles.about")) return;
+        // Methods inheritied from CommandChecker
+        if (!checkLength(sender, args, 1, 1)) return;
+        if (!checkSender(sender, "danktitles.about")) return;
         
         
         sender.sendMessage(ChatColor.GOLD 
-                + "DankTitles" 
-                + "Version: " + getPluginManager().getPlugin("DankTitles").getDescription().getVersion() + "\n"
-                + "Author: PanteLegacy @ karusmc.com\n"
+                + "DankTitles version: " + DankTitles.instance.getDescription().getVersion() + "\n"
+                + DankTitles.instance.getDescription().getDescription() + "\n"
+                + "Author(s): PanteLegacy @ karusmc.com\n"
                 + "Source code & development resources: https://github.com/Pante/DankTitles \n"
-                + "Type /danktitles help to view a list of commands");
+                + ChatColor.GOLD + "Type " + ChatColor.RED + "\"/dt help\"" + ChatColor.GOLD + " to view a list of commands.");
         
     }
     

@@ -18,6 +18,7 @@ package com.karus.danktitles;
 
 import com.karus.danktitles.commands.*;
 import com.karus.danktitles.io.FileHandler;
+import com.karus.danktitles.io.Output;
 import com.karus.danktitles.listeners.*;
 import com.karus.danktitles.menus.*;
 
@@ -43,9 +44,16 @@ public class DankTitles extends JavaPlugin{
     
     // Implemenation of method inherited from JavaPlugin
     public void onEnable() {
+        
         instance = this;
         
-        FileHandler.load();
+        FileHandler.load((Output<String, Exception>) (output, exception) -> {
+            if (exception == null) {
+                getLogger().info(output);
+            } else {
+                getLogger().severe(output);
+            }
+        });
         
         registerVault();
         

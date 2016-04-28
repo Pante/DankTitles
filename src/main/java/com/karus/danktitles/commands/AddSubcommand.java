@@ -16,8 +16,8 @@
  */
 package com.karus.danktitles.commands;
 
-import com.karus.danktitles.DankTitles;
-import java.io.IOException;
+import com.karus.danktitles.io.FileHandler;
+import com.karus.danktitles.io.Output;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,40 +43,36 @@ public class AddSubcommand implements Subcommand, CommandChecker {
         
         
         // Checks if the player is valid
-        if (Bukkit.getOfflinePlayer(args[1]) == null) {
+        OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
+        
+        if (player == null) {
             sender.sendMessage(ChatColor.RED + "No such player exists!");
             return;
         }
         
-        OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
-        
-        
-        // Checks if the respective files contain the respective paths
-        String titlePath = ("categories." + args[2] + ".titles." + args[3]);
-        
-        if (!fileHandler.getTitles().contains(titlePath)) {
+        if (FileHandler.getTitles().get(args[2]) == null || FileHandler.getTitles().get(args[2]).get(args[3]) == null) {
             sender.sendMessage(ChatColor.RED + "No such title exists!");
             return;
         }
         
         String playerPath = ("players." + player.getUniqueId() + ".titles." + args[2]);
         
-        if (checkContain(fileHandler.getPlayers().getStringList(playerPath), args[3])) {
+        if (!FileHandler.getPlayers().getStringList(playerPath).contains(args[3])) {
             sender.sendMessage(ChatColor.RED + args[1] + " already has title: " + args[3]);
             return;
         }
         
         
         // Checks if the player's name has changed and updates it if it did
-        if (!fileHandler.getPlayers().getString("players." + player.getUniqueId() + ".name").equals(player.getName())) {
-            fileHandler.getPlayers().set("players." + player.getUniqueId() + ".name", player.getName());
+        if (!FileHandler.getPlayers().getString("players." + player.getUniqueId() + ".name").equals(player.getName())) {
+            FileHandler.getPlayers().set("players." + player.getUniqueId() + ".name", player.getName());
         }
         
         // Adds the title
-        List<String> tempList = fileHandler.getPlayers().getStringList(playerPath);
+        List<String> tempList = FileHandler.getPlayers().getStringList(playerPath);
         tempList.add(args[3]);
         
-        fileHandler.getPlayers().set(playerPath, tempList);
+        FileHandler.getPlayers().set(playerPath, tempList);
             
         sender.sendMessage(ChatColor.GOLD + args[1] + " has been given the title: " + args[3]);
         
@@ -84,17 +80,17 @@ public class AddSubcommand implements Subcommand, CommandChecker {
             Player playerSender = (Player) sender;
             Player playerReciever = (Player) player;
             if (!playerSender.getName().equals(player.getName())) {
-                playerReciever.sendMessage(ChatColor.GOLD + sender.getName() + " has given title: " + args[3] + " to you!");
+                playerReciever.sendMessage(ChatColor.GOLD + sender.getName() + " has given the title: " + args[3] + " to you!");
             }
         } 
         
         
         // Attempts to save to disk
-        try {
-            DankTitles.instance.dataHandler.save();
-        } catch (IOException e) {
-            sender.sendMessage(ChatColor.RED + "Failed to save changes to disk!");
-        }
+        FileHandler.save((Output<String, Exception>) (out, exception) -> {
+            if (exception != null) {
+                sender.sendMessage(ChatColor.RED + out);
+            }
+        });
         
     }
 }

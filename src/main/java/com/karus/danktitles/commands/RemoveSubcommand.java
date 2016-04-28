@@ -17,6 +17,8 @@
 package com.karus.danktitles.commands;
 
 import com.karus.danktitles.DankTitles;
+import com.karus.danktitles.io.FileHandler;
+import com.karus.danktitles.io.Output;
 import java.io.IOException;
 import java.util.List;
 import org.bukkit.Bukkit;
@@ -44,34 +46,36 @@ public class RemoveSubcommand implements Subcommand, CommandChecker {
         
         
         // Checks if the player specified is invalid and has the title
-        if (Bukkit.getOfflinePlayer(args[1]) == null) {
+        OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
+        
+        if (player == null) {
             sender.sendMessage(ChatColor.RED + "No such player exists!");
             return;
         }
         
-        OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
+        
         
         
         // Checks if the file contain the respective paths
         String playerPath = ("players." + player.getUniqueId() + ".titles." + args[2]);
         
-        if (!checkContain(fileHandler.getPlayers().getStringList(playerPath), args[3])) {
+        if (!FileHandler.getPlayers().getStringList(playerPath).contains(args[3])) {
             sender.sendMessage(ChatColor.RED + args[1] + " does not have title: " + args[3]);
             return;
         }
         
         // Checks if the player's name has changed and updates it if it did
-        if (!fileHandler.getPlayers().getString("players." + player.getUniqueId() + ".name").equals(player.getName())) {
-            fileHandler.getPlayers().set("players." + player.getUniqueId() + ".name", player.getName());
+        if (!FileHandler.getPlayers().getString("players." + player.getUniqueId() + ".name").equals(player.getName())) {
+            FileHandler.getPlayers().set("players." + player.getUniqueId() + ".name", player.getName());
         }
         
         
         
         // Removes the title
-        List<String> tempList = fileHandler.getPlayers().getStringList(playerPath);
+        List<String> tempList = FileHandler.getPlayers().getStringList(playerPath);
         tempList.remove(args[2]);
         
-        fileHandler.getPlayers().set(playerPath, tempList);
+        FileHandler.getPlayers().set(playerPath, tempList);
         
         sender.sendMessage(ChatColor.GOLD + args[1] + " has been stripped of title: " + args[3]);
         
@@ -83,11 +87,13 @@ public class RemoveSubcommand implements Subcommand, CommandChecker {
             }
         } 
         
-        try {
-            DankTitles.instance.dataHandler.save();
-        } catch (IOException e) {
-            sender.sendMessage(ChatColor.RED + "Failed to save changes to disk!");
-        }
+        FileHandler.save((Output<String, Exception>) (out, exception) -> {
+            if (exception == null) {
+                sender.sendMessage(ChatColor.GOLD + out);
+            } else {
+                sender.sendMessage(ChatColor.RED + out);
+            }
+        });
         
     }
 }

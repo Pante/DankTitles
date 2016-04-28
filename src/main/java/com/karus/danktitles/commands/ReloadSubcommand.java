@@ -17,6 +17,8 @@
 package com.karus.danktitles.commands;
 
 import com.karus.danktitles.DankTitles;
+import com.karus.danktitles.io.FileHandler;
+import com.karus.danktitles.io.Output;
 import java.io.IOException;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -36,13 +38,13 @@ public class ReloadSubcommand implements Subcommand, CommandChecker {
         if (!checkLength(sender, args, 1, 1)) return;
         if (!checkSender(sender, "danktitles.reload")) return;
         
-        try {
-            DankTitles.instance.dataHandler.load();
-            DankTitles.instance.dataHandler.save();
-            sender.sendMessage(ChatColor.GOLD + "Successfully reloaded DankTitles");
-        } catch (IOException e) {
-            sender.sendMessage(ChatColor.RED + "Failed to save changes to disk!");
-        }
+        FileHandler.load((Output<String, Exception>) (out, exception) -> {
+            if (exception == null) {
+                sender.sendMessage(ChatColor.GOLD + out);
+            } else {
+                sender.sendMessage(ChatColor.RED + out);
+            }
+        });
         
     }
     

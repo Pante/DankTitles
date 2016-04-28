@@ -8,8 +8,10 @@ package com.karus.danktitles.io;
 /**
  *
  * @author PanteLegacy @ karusmc.com
+ * @param <T> The return type
+ * @param <E> An exception
  */
 @FunctionalInterface
-public interface Output<T> {
-    public void out(T result);
+public interface Output<T, E> {
+    public void out(T result, E exception);
 }

@@ -17,6 +17,7 @@
 package com.karus.danktitles.commands;
 
 import com.karus.danktitles.DankTitles;
+import com.karus.danktitles.io.FileHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -39,12 +40,13 @@ public class SetSubcommand implements Subcommand, CommandChecker {
         
         
         // Checks if the player is valid
-        if (Bukkit.getPlayer(args[1]) == null) {
+        Player player = Bukkit.getPlayer(args[1]);
+        if (player == null) {
             sender.sendMessage(ChatColor.RED + "No such player exists!");
             return;
         }
         
-        Player player = Bukkit.getPlayer(args[1]);
+        
         
         
         // <------ Resets the title if no arguments was specified ------>
@@ -70,16 +72,14 @@ public class SetSubcommand implements Subcommand, CommandChecker {
         
         
         // Checks if the respective files contain the respective paths
-        String titlePath = ("categories." + args[2] + ".titles." + args[3]);
-        
-        if (!fileHandler.getTitles().contains(titlePath)) {
+        if (FileHandler.getTitles().get(args[2]) == null || FileHandler.getTitles().get(args[2]).get(args[3]) == null) {
             sender.sendMessage(ChatColor.RED + "No such title exists!");
             return;
         }
         
         String playerPath = ("players." + player.getUniqueId() + ".titles." + args[2]);
         
-        DankTitles.chat.setPlayerPrefix(player, fileHandler.getTitles().getString(titlePath + ".display"));
+        DankTitles.chat.setPlayerPrefix(player, FileHandler.getTitles().get(args[2]).get(args[3]).getItemMeta().getDisplayName());
         
         sender.sendMessage(ChatColor.GOLD + args[1] + "'s title has been set to: " + args[3]);
         

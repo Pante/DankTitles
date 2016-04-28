@@ -16,48 +16,18 @@
  */
 package com.karus.danktitles.menus;
 
-import org.bukkit.ChatColor;
+import java.util.HashMap;
+import java.util.UUID;
 
 /**
  *
  * @author PanteLegacy @ karusmc.com
  */
-public interface MenuUtility {
+public class MenuUtility {
     
-    // Dynamically generates the page size
-    public default int generatePageSize(int total) {
-        
-        // Checks if too many items were specified
-        return Math.min((int) (Math.ceil(((double) total / 9.0 )) * 9.0), 54);
-        
-    }
+    private static HashMap<UUID, Menu> inMenus = new HashMap<>();
     
-    // Generates the total number of pages
-    public default int generatePageTotal(int total, int pageSize) {
-        
-        if (total <= pageSize ) return 1;
-        
-        return (int) (Math.ceil((double) total / (pageSize - 9)));
-        
-    }
- 
-    
-    // Generates the first index of a sublist
-    public default int generateFirstIndex(int page, int pageSize) {
-        return ((page * pageSize) - (pageSize));
-    }
-    
-    // Generates the last index of a sublist
-    public default int generateLastIndex(int page, int pageSize, int rootListSize) {
-        
-        return Math.min((page * pageSize), rootListSize);
-        
-    }
-    
-    
-    // Parses a coloured string and returns the coloured string
-    public default String parseColouredString(String line) {
-        return ChatColor.translateAlternateColorCodes('&', line);
-    }
-        
+    public static HashMap<UUID, Menu> getMenu() {
+        return inMenus;
+    }    
 }

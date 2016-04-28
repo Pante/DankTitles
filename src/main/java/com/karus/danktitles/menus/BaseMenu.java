@@ -16,7 +16,6 @@
  */
 package com.karus.danktitles.menus;
 
-import com.karus.danktitles.PreconditionChecker;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.ChatColor;
@@ -30,7 +29,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  *
  * @author PanteLegacy @ karusmc.com
  */
-public abstract class BaseMenu implements Menu, MenuUtility, PreconditionChecker {
+public abstract class BaseMenu implements Menu, MenuChecker, PreconditionChecker {
     // Page related variables
     // NOTE: pageSize refers to the fillable slots by the titles AND the navigation buttons.
     public int page, pageSize, pageTotal;

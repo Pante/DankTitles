@@ -20,126 +20,91 @@ import com.karus.danktitles.DankTitles;
 import com.karus.danktitles.io.FileHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class CategoryMenu extends BaseMenu {
+public class CategoryMenu implements Menu, MenuChecker {
 
     // Inherits int page, pageSize, pageTotal & dynamicSize from BaseMenu
     // Inherits Inventory menu, ItemStack item & ItemMeta itemMeta
     
-    // Static Fields
-    private static HashMap<UUID, CategoryMenu> inMenu;
-    
     // Fields
-    public FileHandler fileHandler;
-    public List<String> categories;
-    public FileConfiguration config;
-    
-    public CategoryMenu() {}
+    private FileConfiguration config;
+    private boolean dynamicSize;
+    private int page = 1;
+    private int pageSize;
+    private int pageTotal;
     
     public CategoryMenu(Player player) {
         
-        fileHandler = FileHandler.getInstance();
-        
-        categories = new ArrayList();
-        categories.addAll(fileHandler.getTitles().getConfigurationSection("categories").getKeys(false));
-        
         config = DankTitles.instance.getConfig();
         
-        if (checkCollection(categories)) return;
-           
-        
-        if (config == null || config.contains("menus.category.dynamic-page")) {
-            dynamicSize = config.getBoolean("menus.category.dynamic-page");
-        }
-        
-        if (dynamicSize == false && config.contains("menus.category.page-size")) {
+        dynamicSize = config.getBoolean("menus.category.dynamic-page", true);
+        if (dynamicSize == true) {
+            pageSize = generatePageSize(FileHandler.getTitles().size());
+        } else {
             pageSize = config.getInt("menus.category.page-size");
             if (pageSize <= 0 || pageSize > 54) {
                 pageSize = 54;
             }
-            
-        }
-        
-        if (dynamicSize == true) {
-            pageSize = generatePageSize(categories.size());
-        }
-        
-        pageTotal = generatePageTotal(categories.size(), pageSize);
-        
-        this.page = 1;
+        }    
+        pageTotal = generatePageTotal(FileHandler.getTitles().size(), pageSize);
         
     }
     
-    public CategoryMenu(int page, int pageSize, int pageTotal, boolean dynamicSize, List<String> categories) {
-        
-        fileHandler = FileHandler.getInstance();
+    public CategoryMenu(int page, int pageSize, int pageTotal, boolean dynamicSize) {
         
         this.page = page;
         this.pageSize = pageSize;
         this.pageTotal = pageTotal;
         this.dynamicSize = dynamicSize;
-        this.categories = categories;
         
     }
     
     @Override
     
-    // Implementation of method inheritied from BaseMenu, Menu
+    // Implementation of method inheritied from Menu
     public void display(Player player) { 
         
-        if (checkCollection(categories)) {
-            
-            if (config.getString("danktitles.message.no-categories") == null) {
-                player.sendMessage(ChatColor.RED + "There are currently no categories available!");
-            }
-            else {
-                player.sendMessage(parseColouredString(config.getString("danktitles.message.no-categories")));
-            }
-            
-            return;
-            
+        if (FileHandler.getCategories().isEmpty()) {
+            player.sendMessage(parseColouredString(config.getString("danktitles.message.no-categories",
+                    "There are currently no categories available!")));
+            return;   
         }
         
         getMenu().put(player.getUniqueId(), this);
-        if (pageTotal == 1) {
-            
-            menu = Bukkit.createInventory(null, pageSize, "§l§2Titles - Categories§r");
-            
-        }
-        else {
+        Inventory menu;
+        
+        if (pageTotal == 1) {   
+            menu = Bukkit.createInventory(null, pageSize, "§l§2Titles - Categories§r");   
+        } else {
             
             menu = Bukkit.createInventory(null, pageSize, "§1§2Titles - Categories - Page " + page + "§r");
             
-            
             // Create and place the Previous Page button
-            item = generateItem(config, "menus.icons.back");
-            item = generateItemMeta(config, "menus.icons.back", item);
-            
+            ItemStack item = config.getItemStack("menus.icons.back");
             menu.setItem(pageSize - 8, item);
             
-            
             // Create and place the Next Page button
-            item = generateItem(config, "menus.icons.next");
-            item = generateItemMeta(config, "menus.icons.next", item);
-            
+            item = config.getItemStack("menus.icons.next");
             menu.setItem(pageSize, item);
             
         }
         
-        
         // Generates the items to be placed
 
-        for (String category : categories.subList(generateFirstIndex(page, pageSize), generateLastIndex(page, pageSize, categories.size()))) {
+        new ArrayList<>(FileHandler.getCategories().keySet())
+                .subList(generateFirstIndex(page, pageSize),
+                        generateLastIndex(page, pageSize, FileHandler.getCategories().size())).stream().forEach((name) -> {
+                            
             String path = ("categories." + category);
             
             item = generateItem(fileHandler.getTitles(), path);
@@ -147,7 +112,7 @@ public class CategoryMenu extends BaseMenu {
             
             menu.addItem(item);
                 
-        }
+        });
         
         player.openInventory(menu);
         

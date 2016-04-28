@@ -21,11 +21,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import org.bukkit.ChatColor;
+import java.util.stream.Collectors;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  *
@@ -37,34 +37,127 @@ public class FileHandler {
     private FileHandler() {}
     
     // Fields
-    private static final HashMap<String, HashMap<String, ItemStack>> titles = new HashMap<>();
+    private static HashMap<String, ItemStack> categories = new HashMap<>();
+    private static HashMap<String, HashMap<String, ItemStack>> titles = new HashMap<>();
+
     private static YamlConfiguration players;
     
     
-    public static void load() {
+    // <------ Loading and saving methods ------>
+    
+    public static void load(Output<String, Exception> out) {
         
+        loadDefaultConfig(out);
+        
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                try {
+                    YamlConfiguration config = getConfig(new File(DankTitles.instance.getDataFolder(), "titles.yml"));
+                    
+                    HashMap<String, ItemStack> tempCategories = new HashMap<>();
+                    HashMap<String, HashMap<String, ItemStack>> tempTitles = new HashMap<>();
+                    
+                    config.getConfigurationSection("categories").getKeys(false).stream().forEach(category -> {
+                        
+                        tempCategories.put(category, config.getItemStack("categories." + category +".item"));
+                        tempTitles.put(category, new HashMap<>(
+                                config.getConfigurationSection("categories." + category + ".titles").getKeys(false).stream().collect(Collectors.toMap(title -> title, 
+                                    title -> config.getItemStack("categories." + category + ".titles" + title + ".item")
+                            ))));
+                    });
+                    
+                    synchronized(categories) {
+                        categories = tempCategories;
+                    }
+                    
+                    synchronized(titles) {
+                        titles = tempTitles;
+                    }
+                    
+                    out.out("Successfully loaded titles.yml", null);
+                    
+                } catch (IOException e) {
+                    out.out("Failed to load titles.yml", e);
+                }
+                
+                try {
+                    players = getConfig(new File(DankTitles.instance.getDataFolder(), "players.yml"));
+                    out.out("Successfully loaded players.yml", null);
+                } catch (IOException e) {
+                    out.out("Failed to load players.yml", e);
+                }
+            }
+        }.runTaskAsynchronously(DankTitles.instance);
     }
     
     
-    public static void save() throws IOException {
-
-    DankTitles.instance.saveConfig();
-
+    public static void save(Output<String, Exception> out) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                
+                DankTitles.instance.saveConfig();
+                
+                try {
+                    File file = new File(DankTitles.instance.getDataFolder(), "titles.yml");
+                    YamlConfiguration config = getConfig(file);
+                    
+                    HashMap<String, ItemStack> tempCategories;
+                    HashMap<String, HashMap<String, ItemStack>> tempTitles;
+                    
+                    synchronized(categories) {
+                        tempCategories = new HashMap<>(categories);
+                    }
+                    
+                    synchronized(titles) {
+                        tempTitles = new HashMap<>(titles);
+                    }
+                    
+                    tempCategories.entrySet().stream().forEach(entry -> {
+                        config.set("categores." + entry.getKey() + ".item", entry.getValue());
+                    }); 
+                    
+                    tempTitles.entrySet().stream().forEach(entry -> {
+                        entry.getValue().entrySet().stream().forEach(e -> {
+                            config.set("categories." + entry.getKey() + "." + e.getKey() + ".item", e.getValue());
+                        });
+                    });
+                    
+                    config.save(file);
+                    
+                    out.out("Successfully saved titles.yml", null);
+                    
+                } catch (IOException e) {
+                    out.out("Failed to save titles.yml", e);
+                }
+                
+                try {
+                    players.save(new File(DankTitles.instance.getDataFolder(), "players.yml"));
+                    out.out("Successfully saved players.yml", null);
+                } catch (IOException e) {
+                    out.out("Failed to save players.yml", e);
+                }
+                
+            }
+            
+        }.runTaskAsynchronously(DankTitles.instance);
     }
         
         
     // Helper method which creates & loads the config file
-    public static void loadDefaultConfig(Output<String> out) {
+    public static void loadDefaultConfig(Output<String, Exception> out) {
         if (!new File(DankTitles.instance.getDataFolder(), "config.yml").exists()) {
-            out.out("config.yml not found, creating!");
+            out.out("config.yml not found, creating!", null);
             DankTitles.instance.saveDefaultConfig();
+        } else {
+            out.out("config.yml found, loading!", null);
         }
-        else {
-            out.out(ChatColor.GOLD + "config.yml found, loading!");
-        }
-    }
+    }    
     
-    // Helper method which creates & loads the titles file
+    
+    // <------ Getter & Setter methods ------>
+    
     public static YamlConfiguration getConfig(File file) throws IOException {
         
         YamlConfiguration config;
@@ -81,17 +174,17 @@ public class FileHandler {
         return config;
     }
     
+    public static HashMap<String, ItemStack> getCategories() {
+        return categories;
+    }
     
-    // <------ Getter & Setter methods ------>
-    
-    
-    // Implementation of method inheritied from DataHandler
-    public HashMap<String, HashMap<String, ItemStack>> getTitles() {
+    public static HashMap<String, HashMap<String, ItemStack>> getTitles() {
         return titles;
     }
     
     
-    public YamlConfiguration getPlayers() {
+    public static YamlConfiguration getPlayers() {
         return players;
     }
+    
 }

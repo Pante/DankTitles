@@ -32,13 +32,13 @@ import org.bukkit.command.CommandSender;
 public class HelpSubcommand implements Subcommand, CommandChecker {
     
     // Fields
-    private LinkedHashMap<String, MutablePair<String, String>> commands;
+    private final LinkedHashMap<String, MutablePair<String, String>> COMMANDS;
     private final int SIZE = 3;
     private int page;
     
     public HelpSubcommand() {
         
-        commands = new LinkedHashMap<>(DankTitles.instance.getDescription().getCommands().entrySet().stream()
+        COMMANDS = new LinkedHashMap<>(DankTitles.instance.getDescription().getCommands().entrySet().stream()
             .collect(Collectors.toMap((e) -> e.getKey(), (e) -> 
                 new MutablePair<>((String) e.getValue().get("permission"), (String) e.getValue().get("usage"))
             )));
@@ -60,11 +60,11 @@ public class HelpSubcommand implements Subcommand, CommandChecker {
         
         // Checks if the list needs to be filtered
         if (args.length == 1 || args[1].equals("all")) {
-            parsedCommands = new LinkedHashMap<>(commands.entrySet().stream()
+            parsedCommands = new LinkedHashMap<>(COMMANDS.entrySet().stream()
                 .filter(entry -> sender.hasPermission(entry.getValue().getLeft()))
                 .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue())));
         } else {
-            parsedCommands = new LinkedHashMap<>(commands.entrySet().stream()
+            parsedCommands = new LinkedHashMap<>(COMMANDS.entrySet().stream()
                 .filter(entry -> entry.getKey().contains(args[1]) && sender.hasPermission(entry.getValue().getLeft()))
                 .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue())));
         }
@@ -98,7 +98,7 @@ public class HelpSubcommand implements Subcommand, CommandChecker {
         ArrayList<String> keys = new ArrayList<>(parsedCommands.keySet());
         
         IntStream.range(page * SIZE - SIZE, parsedCommands.size()).limit(SIZE)
-        .forEach(i -> sender.sendMessage(ChatColor.GOLD + commands.get(keys.get(i)).getRight()));
+        .forEach(i -> sender.sendMessage(ChatColor.GOLD + COMMANDS.get(keys.get(i)).getRight()));
         
     }
     

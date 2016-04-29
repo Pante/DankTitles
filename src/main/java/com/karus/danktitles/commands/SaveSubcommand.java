@@ -16,39 +16,17 @@
  */
 package com.karus.danktitles.commands;
 
-import com.karus.danktitles.DankTitles;
-import com.karus.danktitles.io.FileHandler;
-import com.karus.danktitles.io.Output;
-import java.io.IOException;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 /**
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class SaveSubcommand implements Subcommand, CommandChecker {
-    
-    // Inherities FileHandler fileHandler from BaseSubcommand
-    
+public class SaveSubcommand implements Subcommand {
+
     @Override
-    
-    // Implementaiton of method inheritied from BaseSubcommand, Subcommand
-    // Subcommand force-saves the changes to disk
     public void execute(CommandSender sender, String[] args) {
         
-        // Methods inheritied from BaseSubcommand, CommandChecker
-        if (!checkLength(sender, args, 1, 1)) return;
-        if (!checkPlayer(sender, "danktitles.save")) return;
-        
-        FileHandler.save((Output<String, Exception>) (out, exception) -> {
-            if (exception == null) {
-                sender.sendMessage(ChatColor.GOLD + out);
-            } else {
-                sender.sendMessage(ChatColor.RED + out);
-            }
-        });
-        
-        
     }
+    
 }

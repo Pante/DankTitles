@@ -16,35 +16,16 @@
  */
 package com.karus.danktitles.commands;
 
-import com.karus.danktitles.DankTitles;
-import com.karus.danktitles.io.FileHandler;
-import com.karus.danktitles.io.Output;
-import java.io.IOException;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 /**
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class ReloadSubcommand implements Subcommand, CommandChecker {
-    
+public class ReloadSubcommand implements Subcommand {
+
     @Override
-    
-    // Subcommand used to reload the plugin
     public void execute(CommandSender sender, String[] args) {
-        
-        // Methods inheritied from BaseSubcommand, CommandChecker
-        if (!checkLength(sender, args, 1, 1)) return;
-        if (!checkSender(sender, "danktitles.reload")) return;
-        
-        FileHandler.load((Output<String, Exception>) (out, exception) -> {
-            if (exception == null) {
-                sender.sendMessage(ChatColor.GOLD + out);
-            } else {
-                sender.sendMessage(ChatColor.RED + out);
-            }
-        });
         
     }
     

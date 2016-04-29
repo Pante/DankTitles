@@ -33,7 +33,7 @@ public interface CommandChecker {
         else {
             sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
             return false;
-}
+        }       
 
     }
     

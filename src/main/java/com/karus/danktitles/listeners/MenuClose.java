@@ -14,16 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.karus.danktitles.menus;
+package com.karus.danktitles.listeners;
 
-import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 
 /**
  *
  * @author PanteLegacy @ karusmc.com
  */
-public interface Menu {
+public class MenuClose implements Listener {
     
-    void display(Player player);
+    @EventHandler
+    public void onClose(InventoryCloseEvent e) {
+        
+    }
     
 }

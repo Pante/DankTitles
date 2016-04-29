@@ -25,10 +25,8 @@ import org.bukkit.command.CommandSender;
  * @author PanteLegacy @ karusmc.com
  */
 public class AboutSubcommand implements Subcommand, CommandChecker {
-    
+
     @Override
-    
-    // Subcommand returns general information about the plugin
     public void execute(CommandSender sender, String[] args) {
         
         // Methods inheritied from CommandChecker

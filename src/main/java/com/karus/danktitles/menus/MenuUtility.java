@@ -16,6 +16,7 @@
  */
 package com.karus.danktitles.menus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -25,9 +26,67 @@ import java.util.UUID;
  */
 public class MenuUtility {
     
-    private static HashMap<UUID, Menu> inMenus = new HashMap<>();
+    // Private constructor
+    private MenuUtility() {}
     
-    public static HashMap<UUID, Menu> getMenu() {
-        return inMenus;
-    }    
+    // Static fields
+    private static boolean dynamicSize;
+    private static int staticSize;
+    
+    private static HashMap<UUID, Menu> menus = new HashMap<>();
+    private static HashMap<UUID, HashMap<String, ArrayList<String>>> playerTitles = new HashMap<>();
+    
+    // <--- Utility methods ------>
+    
+    public static int generateSize(int total) {
+        return Math.min((int) (Math.ceil(((double) total / 9.0 )) * 9.0), 54);
+    }
+    
+    
+    public static int generatePages(int total, int pageSize) {
+        
+        if (total <= pageSize ) return 1;
+        
+        return (int) (Math.ceil((double) total / (pageSize - 9)));
+        
+    }
+    
+    
+    public static int generateFirst(int page, int pageSize) {
+        return ((page * pageSize) - (pageSize));
+    }
+    
+    public static int generateLast(int page, int pageSize, int rootListSize) {
+        return Math.min((page * pageSize), rootListSize);   
+    }
+    
+    
+    // <------- Getter & Setter methods ------>
+    
+    public static boolean DynamicSizeEnabled() {
+        return dynamicSize;
+    }
+    
+    public static void setDynamicSize(boolean enabled) {
+        dynamicSize = enabled;
+    }
+    
+    
+    public static int getStaticSize() {
+        return staticSize;
+    }
+    
+    public static void setStaticSize(int size) {
+        staticSize = size;
+    }
+    
+    
+    public static HashMap<UUID, Menu> getMenus() {
+        return menus;
+    }
+    
+    public static HashMap<UUID, HashMap<String, ArrayList<String>>> getPlayerTitles() {
+        return playerTitles;
+    }
+    
 }

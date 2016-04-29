@@ -16,23 +16,19 @@
  */
 package com.karus.danktitles.listeners;
 
-import com.karus.danktitles.menus.TitlesMenu;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 /**
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class TitlesMenuClose implements Listener {
+public class TitleMenuListener implements Listener {
     
     @EventHandler
-    
-    public void onClose(InventoryCloseEvent e) {
-        if (e.getInventory().getTitle().contains("Titles - Category") && TitlesMenu.getMenu().containsKey(e.getPlayer().getUniqueId())) {
-            TitlesMenu.getMenu().remove(e.getPlayer().getUniqueId());
-        }
+    public void onClick(InventoryClickEvent e) {
+        
     }
     
 }

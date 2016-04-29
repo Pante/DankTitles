@@ -16,81 +16,17 @@
  */
 package com.karus.danktitles.commands;
 
-import com.karus.danktitles.DankTitles;
-import com.karus.danktitles.io.FileHandler;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 /**
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class SetSubcommand implements Subcommand, CommandChecker {
-    
+public class SetSubcommand implements Subcommand {
+
     @Override
-    
-    // Subcommand force-sets a player's title back to group default
     public void execute(CommandSender sender, String[] args) {
         
-        // Methods inheritied from BaseSubcommand, CommandChecker
-        if (!checkLength(sender, args, 2, 4)) return;
-        if (!checkSender(sender, "danktitles.set")) return;
-        
-        
-        // Checks if the player is valid
-        Player player = Bukkit.getPlayer(args[1]);
-        if (player == null) {
-            sender.sendMessage(ChatColor.RED + "No such player exists!");
-            return;
-        }
-        
-        
-        
-        
-        // <------ Resets the title if no arguments was specified ------>
-        if (args.length == 2) {
-            DankTitles.chat.setPlayerPrefix(player, DankTitles.chat
-                    .getGroupPrefix(player.getWorld(), DankTitles.permission.getPrimaryGroup(player)));
-            
-            sender.sendMessage(ChatColor.GOLD + args[1] + "'s title has been reset!");
-            
-            if (sender instanceof Player && player.isOnline()) {
-                Player playerSender = (Player) sender;
-                Player playerReciever = (Player) player;
-                if (!playerSender.getName().equals(player.getName())) {
-                    playerReciever.sendMessage(ChatColor.GOLD + sender.getName() + " has reset your title!");
-                }
-            } 
-            
-            return;
-        } 
-        
-        
-        // <------ Sets the title according to the arguments specified ------>
-        
-        
-        // Checks if the respective files contain the respective paths
-        if (FileHandler.getTitles().get(args[2]) == null || FileHandler.getTitles().get(args[2]).get(args[3]) == null) {
-            sender.sendMessage(ChatColor.RED + "No such title exists!");
-            return;
-        }
-        
-        String playerPath = ("players." + player.getUniqueId() + ".titles." + args[2]);
-        
-        DankTitles.chat.setPlayerPrefix(player, FileHandler.getTitles().get(args[2]).get(args[3]).getItemMeta().getDisplayName());
-        
-        sender.sendMessage(ChatColor.GOLD + args[1] + "'s title has been set to: " + args[3]);
-        
-        // Informs the target of the change if online
-        if (sender instanceof Player && player.isOnline()) {
-                Player playerSender = (Player) sender;
-                Player playerReciever = (Player) player;
-                if (!playerSender.getName().equals(player.getName())) {
-                    playerReciever.sendMessage(ChatColor.GOLD + sender.getName() + "has set your title to: " + args[3]);
-                }
-            } 
     }
     
 }

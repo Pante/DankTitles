@@ -16,14 +16,10 @@
  */
 package com.karus.danktitles.listeners;
 
-import com.karus.danktitles.DankTitles;
-import com.karus.danktitles.io.FileHandler;
-import java.io.IOException;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
  *
@@ -32,27 +28,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class PlayerListener implements Listener {
     
     @EventHandler
-
-    // Handles the joining of players
-    public void onPlayerJoinEvent(PlayerJoinEvent event) {
+    public void onJoin(PlayerJoinEvent e) {
         
-        // variables
-        Player player = event.getPlayer();
-        YamlConfiguration tempPlayers = FileHandler.getInstance().getPlayers();
-        
-        
-        // Checks if players.yml contains players or if the player name changed
-        if (!tempPlayers.contains("players." + player.getUniqueId())) {
-           
-            tempPlayers.set("players." + player.getUniqueId() + ".name", player.getName());
-            
-            try {
-                FileHandler.getInstance().save();
-            } catch (IOException e) {
-                DankTitles.instance.getLogger().severe("Failed to save changes to disk!");
-            }
-            
-        }
+    }
+    
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e) {
         
     }
     

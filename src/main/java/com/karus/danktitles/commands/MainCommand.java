@@ -16,11 +16,7 @@
  */
 package com.karus.danktitles.commands;
 
-import com.karus.danktitles.DankTitles;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -32,33 +28,15 @@ import org.bukkit.command.CommandSender;
 public class MainCommand implements CommandExecutor {
     
     // Fields
-    private HashMap<String, Subcommand> subcommands = new HashMap<>();
-
+    private HashMap<String, Subcommand> subcommads = new HashMap<>();
     
-    // Registers the method in the hashmap
-    public void registerSubcommand(String fullCommmandName, Subcommand subcommand) {
-        
-        new ArrayList<>((List<String>) DankTitles.instance.getDescription()
-            .getCommands().get(fullCommmandName).get("aliases"))
-            .stream().forEach(alias -> {
-                subcommands.put(alias, subcommand);
-            });
-        
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        return true;
     }
     
     
-    @Override
-    
-    // Implementation of method from CommandExecutor
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        
-        if (args.length == 0 || subcommands.get(args[0]) == null) {
-            sender.sendMessage(ChatColor.RED + "Invalid argument. Type \"/dt help\" for a list of commands.");     
-        } else {
-            subcommands.get(args[0]).execute(sender, args);
-        }
-        
-        return true;
+    public void registerSubcommand(String fullName, Subcommand subcommand) {
         
     }
     

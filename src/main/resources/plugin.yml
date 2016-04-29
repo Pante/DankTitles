@@ -5,55 +5,111 @@ description: Create dank titles for players
 author: PanteLegacy
 depend: [Vault]
 commands:
+
   danktitles:
     description: Use this to add titles and whatnot
-    usage: "|
-        /DankTitles
-        /DankTitles [<about|help|reload|save>]
-        /DankTitles [<player>] [<add|remove|reset>] [<category>] [<title>]"
+    usage: /DankTitles [subcommand]
     aliases: [dt, dtitles]
+    permission: danktitles.command
+  
+  "danktitles about":
+    description: Allows administrators to view the plugin version and information
+    usage: /DankTitles about
+    aliases: [about]
+    permisssion: danktitles.about
+  
+  "danktitles add":
+    description: Adds a titles to the player
+    usage: /DankTitles add [category] [title] (<name|UUID>)
+    aliases: [add, give]
+    permission: danktitles.add
+  
+  "danktitles help":
+    description: Allows players to view the list of commands
+    usage: /DankTitles help [(all|subcommand)] [(page number)]
+    aliases: [help, h]
+    permission: danktitles.help
     
+  "danktitles menu":
+    description: Opens up the menu for selecting a title
+    usage: /DankTitles menu
+    aliases: [menu, m]
+    permission: danktitles.menu
+    
+  "danktitles reload":
+    description: Reloads the plugin files
+    usage: /DankTitles reload [component]
+    aliases: [reload, load]
+    permission: danktitles.reload
+  
+  "danktitles remove":
+    description: Removes the players title
+    usage: /DankTitles remove [category] [title] (<name|UUID>)
+    aliases: [remove, delete, del]
+  
+  "danktitles reset":
+    description: Resets the senders titles back to their group default
+    usage: /DankTitles reset [category] [title] (<name|UUID>)
+    aliases: [reset]
+    permission: danktitles.reset
+  
+  "danktitles save":
+    description: Saves the plugin data to files
+    usage: /DankTitles save [component]
+    aliases: [save]
+    permission: danktitles.save
+  
+  "danktitles set":
+    description: Sets the specified player's title
+    usage: /DankTitles set [category] [title] (<name|UUID>)
+    aliases: [set]
+    permission: danktitles.set
+    
+
+  
 permissions:
   danktitles.*:
-    description: Gives access to all danktitles commands.
+    description: Gives access to all DankTitles commands.
     default: false
     childeren:
+      danktitles.command: true
+      
       danktitles.about: true
+      danktitles.add: true
       danktitles.help: true
+      danktitles.menu: true
       danktitles.reload: true
+      danktitles.remove: true
       danktitles.reset: true
       danktitles.save: true
-      danktitles.titles: true
-      danktitles.remove: true
-      
+      danktitles.set: true
+     
+  danktitles.command:
+    default: true
+    
+    
   danktitles.about:
-    description: Allows players to view the version of the plugin
+    default: false
+  
+  danktitles.add:
     default: false
     
   danktitles.help:
-    description: Allows players to view a list of plugin commands
     default: false
     
+  danktitles.menu:  
+    default: false
   danktitles.reload:
-    description: Allows players to force-reload the plugin
-    default: false
-    
-  danktitles.reset:
-    description: Allows players to reset their titles back to their group defaults
-    default: false 
-    
-  danktitles.save:
-    description: Allows players to force-save the plugin
-    default: false
-    
-  danktitles.titles:
-    description: Allows players to open a GUI menu of all the titles they own
-    default: false
-    
-  danktitles.add:
-    description: Allows access to giving a player a title that is defined in titles.yml
     default: false
     
   danktitles.remove:
-    description: Allows access to removing a player's title defined in players.yml
+    default: false
+    
+  danktitles.reset:
+    default: false 
+    
+  danktitles.save:
+    default: false
+    
+  danktitles.set:
     default: false

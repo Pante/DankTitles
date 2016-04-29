@@ -23,8 +23,5 @@ import org.bukkit.command.CommandSender;
  * @author PanteLegacy @ karusmc.com
  */
 public interface Subcommand {
-    
-    // Method that contains the logic of the subcommand
-    public void execute(CommandSender sender, String[] args);
-    
+    void execute(CommandSender sender, String[] args);
 }

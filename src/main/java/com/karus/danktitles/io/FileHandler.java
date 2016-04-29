@@ -21,7 +21,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -36,8 +38,8 @@ public class FileHandler {
     // Static fields
     private static HashMap<String, ItemStack> categories = new HashMap<>();
     private static HashMap<String, HashMap<String, ItemStack>> titles = new HashMap<>();
+    private static HashMap<UUID, HashMap<String, ArrayList<String>>> players = new HashMap<>();
     
-    private static YamlConfiguration players;
     
     
     // <------ Loading & Saving methods ------>   
@@ -52,42 +54,53 @@ public class FileHandler {
     }
     
     public static void loadPlayers(Output<String, Exception> out) {
-        
-        File file = new File(DankTitles.instance.getDataFolder(), "players.yml");    
-        
-        if (file.exists()) {
-            players = YamlConfiguration.loadConfiguration(file);
-        } else {
-            try (Reader inputStream = new InputStreamReader(DankTitles.instance.getResource(file.getName()), "UTF-8")) {
-                players = YamlConfiguration.loadConfiguration(inputStream);
-                players.save(file);
-            } catch (IOException e) {
-                out.out("Failed to retrieve file: players.yml", e);
-                return;
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                File file = new File(DankTitles.instance.getDataFolder(), "players.yml");
+                YamlConfiguration config;
+                try { 
+                    config = getConfig(file);
+                } catch (IOException e) {
+                    out.out("Failed to retrieve players.yml from jar", e);
+                    return;
+                }
+
+                HashMap<UUID, HashMap<String, ArrayList<String>>> tempMap = new HashMap<>();
+
+                config.getConfigurationSection("players").getKeys(false).stream().forEach(player -> {
+                    HashMap<String, ArrayList<String>> tempTitles = new HashMap<>();
+
+                    config.getConfigurationSection("players." + player + ".categories").getKeys(false).stream().forEach(category -> {
+                        tempTitles.put(category, 
+                                new ArrayList<>(config.getStringList("players." + player + ".categories." + category)));
+                    });
+
+                    tempMap.put(UUID.fromString(player), tempTitles);
+                });
+                
+                synchronized(players) {
+                    players = tempMap;
+                }
+                
+                out.out("Loaded file: players.yml", null);
+                
             }
-        } 
+        }.runTaskAsynchronously(DankTitles.instance);
         
-        out.out("Loaded file: players.yml", null);
     }
         
     public static void loadTitles(Output<String, Exception> out) {
         new BukkitRunnable() {
             @Override
             public void run() {
-                
-                YamlConfiguration config;
                 File file = new File(DankTitles.instance.getDataFolder(), "titles.yml");
-                
-                if (file.exists()) {
-                    config = YamlConfiguration.loadConfiguration(file);
-                } else {       
-                    try (Reader inputStream = new InputStreamReader(DankTitles.instance.getResource(file.getName()), "UTF-8")) {
-                        config = YamlConfiguration.loadConfiguration(inputStream);
-                        config.save(file);
-                    } catch (IOException e) {
-                        out.out("Failed to retrieve titles.yml from jar", e);
-                        return;
-                    }
+                YamlConfiguration config;
+                try {
+                    config = getConfig(file);
+                } catch (IOException e) {
+                    out.out("Failed to retrieve titles.yml from jar", e);
+                    return;
                 }
                  
                 HashMap<String, ItemStack> tempCategories = new HashMap<>();
@@ -124,12 +137,33 @@ public class FileHandler {
     }
     
     public static void savePlayers(Output<String, Exception> out) {
-        try {
-            players.save(new File(DankTitles.instance.getDataFolder(), "players.yml"));
-            out.out("Saved players.yml", null);
-        } catch (IOException e) {
-            out.out("Failed to save players.yml", e);
-        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                File file = new File(DankTitles.instance.getDataFolder(), "players.yml");
+                YamlConfiguration config;
+                try {
+                    config = getConfig(file);
+                    HashMap<UUID, HashMap<String, ArrayList<String>>> tempMap;
+                    synchronized (players) {
+                        tempMap = new HashMap<>(players);
+                    }
+                    tempMap.entrySet().stream().forEach(entry -> {
+                        entry.getValue().entrySet().stream().forEach(e -> {
+                            config.set("players." + entry.getKey() + ".categories." + e.getKey(), e.getValue());
+                        });
+                    });
+                    
+                    config.save(file);
+                    
+                    out.out("Saved players.yml", null);
+                    
+                } catch (IOException e) {
+                    out.out("Failed to save players.yml", e);
+                }
+            }
+        }.runTaskAsynchronously(DankTitles.instance);
+        
     }
     
     public static void saveTitles(Output<String, Exception> out) {
@@ -137,17 +171,9 @@ public class FileHandler {
             @Override
             public void run() {
                 try {
-                    File file = new File(DankTitles.instance.getDataFolder(), "titles.yml");    
-                    YamlConfiguration config;
                     
-                    if (file.exists()) {
-                        config = YamlConfiguration.loadConfiguration(file);
-                    } else {
-                        Reader inputStream = new InputStreamReader(DankTitles.instance.getResource(file.getName()), "UTF-8");
-
-                        config = YamlConfiguration.loadConfiguration(inputStream);
-                        config.save(file);
-                    } 
+                    File file = new File(DankTitles.instance.getDataFolder(), "titles.yml");    
+                    YamlConfiguration config = getConfig(file);
                     
                     HashMap<String, ItemStack> tempCategories;
                     HashMap<String, HashMap<String, ItemStack>> tempTitles;
@@ -185,6 +211,21 @@ public class FileHandler {
     
     // <------ Getter & Setter methods ------>
     
+    private static YamlConfiguration getConfig(File file) throws IOException {
+        YamlConfiguration config;
+                    
+        if (file.exists()) {
+            config = YamlConfiguration.loadConfiguration(file);
+        } else {
+            try (Reader inputStream = new InputStreamReader(DankTitles.instance.getResource(file.getName()), "UTF-8")) {
+                config = YamlConfiguration.loadConfiguration(inputStream);
+                config.save(file);
+            }
+        } 
+        
+        return config;
+    }
+    
     public static HashMap<String, ItemStack> getCategories() {
         return categories;
     }
@@ -194,7 +235,7 @@ public class FileHandler {
     }
     
     
-    public static YamlConfiguration getPlayers() {
+    public static HashMap<UUID, HashMap<String, ArrayList<String>>> getPlayers() {
         return players;
     }
     

@@ -47,12 +47,6 @@ commands:
     usage: /DankTitles remove [category] [title] (<name|UUID>)
     aliases: [remove, delete, del]
   
-  "danktitles reset":
-    description: Resets the senders titles back to their group default
-    usage: /DankTitles reset [category] [title] (<name|UUID>)
-    aliases: [reset]
-    permission: danktitles.reset
-  
   "danktitles save":
     description: Saves the plugin data to files
     usage: /DankTitles save [component]
@@ -61,7 +55,7 @@ commands:
   
   "danktitles set":
     description: Sets the specified player's title
-    usage: /DankTitles set [category] [title] (<name|UUID>)
+    usage: /DankTitles set (category) (title) (<name|UUID>)
     aliases: [set]
     permission: danktitles.set
     
@@ -80,7 +74,6 @@ permissions:
       danktitles.menu: true
       danktitles.reload: true
       danktitles.remove: true
-      danktitles.reset: true
       danktitles.save: true
       danktitles.set: true
      
@@ -104,9 +97,6 @@ permissions:
     
   danktitles.remove:
     default: false
-    
-  danktitles.reset:
-    default: false 
     
   danktitles.save:
     default: false

@@ -16,17 +16,55 @@
  */
 package com.karus.danktitles.commands;
 
+import com.karus.danktitles.DankTitles;
+import com.karus.danktitles.io.FileHandler;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class SetSubcommand implements Subcommand {
+public class SetSubcommand implements Subcommand, CommandChecker {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
         
+        // Methods inheritied from BaseSubcommand, CommandChecker
+        if (!checkLength(sender, args, 2, 4)) return;
+        if (!checkSender(sender, "danktitles.set")) return;
+        
+        
+        Player player = Bukkit.getPlayer(args[3]);
+        if (player == null) {
+            sender.sendMessage(ChatColor.RED + "No such player exists!");
+            return;
+        }
+        
+        if (args.length == 2) {
+            DankTitles.chat.setPlayerPrefix(player, DankTitles.chat
+                    .getGroupPrefix(player.getWorld(), DankTitles.permission.getPrimaryGroup(player)));
+            
+            sender.sendMessage(ChatColor.GOLD + "You have reset " + args[1] + "'s title.");
+            
+            if (!sender.getName().equals(player.getName())) {
+                player.sendMessage(ChatColor.GOLD + sender.getName() + " has reset your title!");
+            } 
+        } else if (args.length == 4) {
+            
+            if (FileHandler.getTitles(args[1]) == null || !FileHandler.getTitles(args[1]).containsKey(args[2])) {
+                sender.sendMessage(ChatColor.RED + "No such title exists!");
+                return;
+            }
+            
+            DankTitles.chat.setPlayerPrefix(player, FileHandler.getTitles(args[1]).get(args[2]).getItemMeta().getDisplayName());
+            
+            if (player.isOnline() && !sender.getName().equals(player.getName())) {
+                player.sendMessage(ChatColor.GOLD + sender.getName() + "has set your title to: " + args[3]);
+            }
+        }
     }
     
 }

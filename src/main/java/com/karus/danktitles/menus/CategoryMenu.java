@@ -16,6 +16,7 @@
  */
 package com.karus.danktitles.menus;
 
+import com.karus.danktitles.io.FileHandler;
 import org.bukkit.entity.Player;
 
 /**
@@ -26,11 +27,28 @@ public class CategoryMenu implements Menu {
     
     // Fields
     private int page;
+    private int pageSize;
     private int pageTotal;
     
     public CategoryMenu() {
         page = 1;
+        
+        if (MenuUtility.DynamicSizeEnabled()) {
+            pageSize = MenuUtility.generateSize(FileHandler.getCategories().size());
+        } else {
+            pageSize = MenuUtility.getStaticSize();
+        }
+        
+        pageTotal = MenuUtility.generatePages(FileHandler.getCategories().size(), pageSize);
+        
     }
+    
+    public CategoryMenu(int page, int pageTotal) {
+        this.page = page;
+        this.pageTotal = pageTotal;
+    }
+    
+    
     
     @Override
     public void display(Player player) {

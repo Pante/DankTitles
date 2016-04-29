@@ -16,16 +16,57 @@
  */
 package com.karus.danktitles.commands;
 
+import com.karus.danktitles.io.FileHandler;
+import com.karus.danktitles.io.Output;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 /**
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class ReloadSubcommand implements Subcommand {
+public class ReloadSubcommand implements Subcommand, CommandChecker {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+        
+        // Methods inheritied from CommandChecker
+        if (!checkLength(sender, args, 1, 2)) return;
+        if (!checkSender(sender, "danktitles.reload")) return;
+        
+        Output<String, Exception> output = (out, exception) -> {
+            if (exception == null) {
+                sender.sendMessage(ChatColor.GOLD + out);
+            } else {
+                sender.sendMessage(ChatColor.RED + out);
+            }
+        };
+        
+        if (args.length == 1 || args[1].equals("all")) {
+            FileHandler.loadConfig(output);
+            FileHandler.loadTitles(output);
+            FileHandler.loadPlayers(output);
+            return;
+        }
+        
+        switch (args[1].toLowerCase()) {
+            
+            case "config":
+                FileHandler.loadConfig(output);
+                break;
+            
+            case "players":
+                FileHandler.loadPlayers(output);
+                break;
+                
+            case "titles":
+                FileHandler.loadTitles(output);
+                break;
+                
+            default:
+                sender.sendMessage(ChatColor.RED + "Invalid argument.");
+                break;
+        }
         
     }
     

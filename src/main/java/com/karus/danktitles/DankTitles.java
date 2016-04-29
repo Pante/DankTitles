@@ -83,7 +83,6 @@ public class DankTitles extends JavaPlugin {
         command.registerSubcommand("danktitles menu", new MenuSubcommand());
         command.registerSubcommand("danktitles reload", new ReloadSubcommand());
         command.registerSubcommand("danktitles remove", new RemoveSubcommand());
-        command.registerSubcommand("danktitles reset", new ResetSubcommand());
         command.registerSubcommand("danktitles save", new SaveSubcommand());
         command.registerSubcommand("danktitles set", new SetSubcommand());
         

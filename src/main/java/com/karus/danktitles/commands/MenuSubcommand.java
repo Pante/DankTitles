@@ -16,16 +16,25 @@
  */
 package com.karus.danktitles.commands;
 
+import com.karus.danktitles.menus.CategoryMenu;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class MenuSubcommand implements Subcommand {
+public class MenuSubcommand implements Subcommand, CommandChecker {
 
     @Override
+    // Subcommand used to open up the menu for title selection
     public void execute(CommandSender sender, String[] args) {
+
+        // Methods inheritied from BaseSubcommand, CommandChecker
+        if (!checkLength(sender, args, 1, 1)) return;
+        if (!checkPlayer(sender, "danktitles.menu")) return;
+
+        new CategoryMenu().display((Player) sender);
         
     }
     

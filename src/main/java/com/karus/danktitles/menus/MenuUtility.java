@@ -16,7 +16,6 @@
  */
 package com.karus.danktitles.menus;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -34,7 +33,6 @@ public class MenuUtility {
     private static int staticSize;
     
     private static HashMap<UUID, Menu> menus = new HashMap<>();
-    private static HashMap<UUID, HashMap<String, ArrayList<String>>> playerTitles = new HashMap<>();
     
     // <--- Utility methods ------>
     
@@ -83,10 +81,6 @@ public class MenuUtility {
     
     public static HashMap<UUID, Menu> getMenus() {
         return menus;
-    }
-    
-    public static HashMap<UUID, HashMap<String, ArrayList<String>>> getPlayerTitles() {
-        return playerTitles;
     }
     
 }

@@ -1,0 +1,58 @@
+dynamic-size: true
+static-size: 54
+
+message:
+  no-categories: Insert no categories message here.
+  no-titles: Insert no titles message here.
+  
+icons:
+  back:
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: STAINED_CLAY
+      damage: 5
+      amount: 1
+      meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: §2Previous Page
+      lore:
+      - Takes you back to the previous page
+      
+  next:
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: STAINED_CLAY
+      damage: 5
+      amount: 1
+      meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: §2Next Page
+      lore:
+      - Takes you to the next page
+      
+  reset:
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: ANVIL
+      amount: 1
+      meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: §4Reset Title
+      lore:
+      - Resets your title back to the group 
+      - default
+      
+  menu:
+    item:
+        ==: org.bukkit.inventory.ItemStack
+        type: EYE_OF_ENDER
+        amount: 1
+        meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: §2Main Menu
+        lore:
+        - Takes you back to the main menu

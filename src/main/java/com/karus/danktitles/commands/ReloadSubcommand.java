@@ -18,6 +18,7 @@ package com.karus.danktitles.commands;
 
 import com.karus.danktitles.io.FileHandler;
 import com.karus.danktitles.io.Output;
+import com.karus.danktitles.menus.MenuUtility;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -44,6 +45,7 @@ public class ReloadSubcommand implements Subcommand, CommandChecker {
         
         if (args.length == 1 || args[1].equals("all")) {
             FileHandler.loadConfig(output);
+            MenuUtility.load();
             FileHandler.loadTitles(output);
             FileHandler.loadPlayers(output);
             return;
@@ -53,6 +55,7 @@ public class ReloadSubcommand implements Subcommand, CommandChecker {
             
             case "config":
                 FileHandler.loadConfig(output);
+                MenuUtility.load();
                 break;
             
             case "players":

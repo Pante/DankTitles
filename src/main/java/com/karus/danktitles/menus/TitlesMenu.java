@@ -16,38 +16,155 @@
  */
 package com.karus.danktitles.menus;
 
+import com.karus.danktitles.DankTitles;
 import com.karus.danktitles.io.FileHandler;
+import java.util.ArrayList;
+import java.util.stream.IntStream;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
  * @author PanteLegacy @ karusmc.com
  */
-public class TitlesMenu implements Menu {
+public class TitlesMenu implements Menu, Listener {
     
     
     // Fields
+    private String name;
+    private String category;
+    
+    private FileConfiguration config;
+    
     private int page;
+    private int pageSize;
     private int pageTotal;
     
-    public TitlesMenu() {
+    public TitlesMenu(String category) {
+        
+        config = DankTitles.instance.getConfig();
+        
         page = 1;
-        int t = FileHandler.getCategories().size();
-        if (!MenuUtility.DynamicSizeEnabled()) {
-            pageTotal = MenuUtility.generatePages(t, MenuUtility.generateSize(t));
+        this.category = category;
+        
+        if (MenuUtility.DynamicSizeEnabled()) {
+            pageSize = MenuUtility.generateSize(FileHandler.getTitles(category).size(), page);
         } else {
-            pageTotal = MenuUtility.generatePages(t, MenuUtility.getStaticSize());
+            pageSize = MenuUtility.getStaticSize();
         }
+        
+        pageTotal = MenuUtility.generatePages(FileHandler.getTitles(category).size(), pageSize);
+        
     }
     
-    public TitlesMenu(int page, int pageTotal) {
+    public TitlesMenu(String category, int page, int pageTotal) {
+        
+        config = DankTitles.instance.getConfig();
+        
         this.page = page;
         this.pageTotal = pageTotal;
+        
+        if (MenuUtility.DynamicSizeEnabled()) {
+            pageSize = MenuUtility.generateSize(FileHandler.getTitles(category).size(), page);
+        } else {
+            pageSize = MenuUtility.getStaticSize();
+        }
+        
     }
     
     
     @Override
     public void display(Player player) {
+        
+        DankTitles.instance.getServer().getPluginManager().registerEvents(this, DankTitles.instance);
+        
+        if (FileHandler.getCategories().isEmpty()) {    
+            player.sendMessage(config.getString("message.no-titles", ChatColor.RED + "There are currently no titles available!"));
+        }
+        
+        Inventory menu;
+        
+        if (pageTotal == 1) {
+            
+            name = "§l§2Titles - " + category + "§r";
+            menu = Bukkit.createInventory(null, pageSize, name);
+            
+        } else {
+            
+            name = "§1§2Titles - " + category +  "- Page " + page + "§r";
+            menu = Bukkit.createInventory(null, pageSize, name);
+            
+            menu.setItem(pageSize - 8, MenuUtility.getIcon("back"));   
+            menu.setItem(pageSize, MenuUtility.getIcon("next"));
+            
+        }
+        
+        menu.setItem(pageSize - 6, MenuUtility.getIcon("reset"));
+        menu.setItem(pageSize - 5, MenuUtility.getIcon("menu"));
+        
+        ArrayList<String> list = new ArrayList<>(FileHandler.getTitles(category).keySet()); 
+        
+        IntStream.range(MenuUtility.generateFirst(page, pageSize), 
+                MenuUtility.generateLast(page, pageSize, FileHandler.getTitles(category).size()))
+                .forEach(n -> menu.addItem(FileHandler.getTitles(category).get(list.get(n))));
+        
+        player.openInventory(menu);
+        
+    }
+    
+    @EventHandler
+    public void onClick(InventoryClickEvent e) {
+        
+        if (!e.getInventory().getTitle().equals(name)) {
+            return;
+        }
+        e.setCancelled(true);
+        
+        ItemStack clicked = e.getCurrentItem();
+        if (clicked.getType() == Material.AIR) return;
+        
+        Player player = (Player) e.getWhoClicked();
+        
+        if (clicked.equals(MenuUtility.getIcon("back"))) {
+            if ((page - 1) > 0) {
+                new TitlesMenu(category, page - 1, pageTotal).display(player);
+            } else {
+                player.sendMessage(ChatColor.RED + "You're already on the first page!");
+            }
+        }
+        
+        else if (clicked.equals(MenuUtility.getIcon("next"))) {
+            if ((page + 1) <= pageTotal) {
+                new TitlesMenu(category, page + 1, pageTotal).display(player);
+            } else {
+                player.sendMessage(ChatColor.RED + "You're already on the last page!");
+            }
+        } 
+        
+        else if (clicked.equals(MenuUtility.getIcon("reset"))) {
+            DankTitles.chat.setPlayerPrefix(player, DankTitles.chat.getGroupPrefix(player.getWorld(), DankTitles.permission.getPrimaryGroup(player)));
+            player.sendMessage(ChatColor.GOLD + "Your title has been reset to your group default!");
+            player.closeInventory();
+        }
+        
+        else if (clicked.equals(MenuUtility.getIcon("menu"))) {
+            new CategoryMenu().display(player);
+        }
+        
+        else {
+            DankTitles.chat.setPlayerPrefix(player, clicked.getItemMeta().getDisplayName() + " ");
+            player.sendMessage(ChatColor.GOLD + "Your title has been changed to: " + ChatColor.RESET + clicked.getItemMeta().getDisplayName());
+            player.closeInventory();
+        }
+        
         
     }
     

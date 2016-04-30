@@ -17,13 +17,11 @@
 package com.karus.danktitles.listeners;
 
 import com.karus.danktitles.io.FileHandler;
-import com.karus.danktitles.menus.MenuUtility;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
  *
@@ -34,13 +32,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        FileHandler.getPlayers().putIfAbsent(player.getUniqueId(), new HashMap<>());
-    }
-    
-    @EventHandler
-    public void onQuit(PlayerQuitEvent e) {
-        Player player = e.getPlayer();
-        MenuUtility.getMenus().remove(player.getUniqueId());
+        FileHandler.getPlayers().putIfAbsent(player.getUniqueId(), new LinkedHashMap<>());
     }
     
 }

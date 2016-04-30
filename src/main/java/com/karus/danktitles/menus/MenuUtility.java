@@ -16,8 +16,10 @@
  */
 package com.karus.danktitles.menus;
 
+import com.karus.danktitles.DankTitles;
 import java.util.HashMap;
-import java.util.UUID;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -31,12 +33,28 @@ public class MenuUtility {
     // Static fields
     private static boolean dynamicSize;
     private static int staticSize;
+    private static HashMap<String, ItemStack> icons = new HashMap<>();
     
-    private static HashMap<UUID, Menu> menus = new HashMap<>();
+    // <------ Loading methods ------->
+    public static void load() {
+        
+        dynamicSize = DankTitles.instance.getConfig().getBoolean("dynamic-size", false);
+        staticSize = DankTitles.instance.getConfig().getInt("static-size", 54);
+        
+        DankTitles.instance.getConfig().getConfigurationSection("icons").getKeys(false).stream().forEach(label -> 
+            icons.put(label, DankTitles.instance.getConfig().getItemStack("icons." + label + ".item", new ItemStack(Material.STONE)))
+        );
+        
+    }
+    
     
     // <--- Utility methods ------>
     
-    public static int generateSize(int total) {
+    public static int generateSize(int total, int page) {
+        
+        int t = total - (page * 54);
+        if (t <= 0) return 54;
+        
         return Math.min((int) (Math.ceil(((double) total / 9.0 )) * 9.0), 54);
     }
     
@@ -78,9 +96,8 @@ public class MenuUtility {
         staticSize = size;
     }
     
-    
-    public static HashMap<UUID, Menu> getMenus() {
-        return menus;
+    public static ItemStack getIcon(String label) {
+        return icons.get(label);
     }
     
 }

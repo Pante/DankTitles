@@ -1,0 +1,28 @@
+categories:
+  default:
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: STAINED_CLAY
+      damage: 4
+      amount: 1
+      meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: §eDefault Category
+      lore:
+      - This is the default category
+      
+    titles:
+      defaulttitle:
+        item:
+          ==: org.bukkit.inventory.ItemStack
+          type: STAINED_CLAY
+          damage: 5
+          amount: 1
+          meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: §eDanky Chan
+          lore:
+          - This is the default title
+      

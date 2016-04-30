@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -36,9 +37,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class FileHandler {
     
     // Static fields
-    private static HashMap<String, ItemStack> categories = new HashMap<>();
-    private static HashMap<String, HashMap<String, ItemStack>> titles = new HashMap<>();
-    private static HashMap<UUID, HashMap<String, ArrayList<String>>> players = new HashMap<>();
+    private static LinkedHashMap<String, ItemStack> categories = new LinkedHashMap<>();
+    private static LinkedHashMap<String, LinkedHashMap<String, ItemStack>> titles = new LinkedHashMap<>();
+    private static LinkedHashMap<UUID, LinkedHashMap<String, ArrayList<String>>> players = new LinkedHashMap<>();
     
     
     
@@ -66,10 +67,10 @@ public class FileHandler {
                     return;
                 }
 
-                HashMap<UUID, HashMap<String, ArrayList<String>>> tempMap = new HashMap<>();
+                LinkedHashMap<UUID, LinkedHashMap<String, ArrayList<String>>> tempMap = new LinkedHashMap<>();
 
                 config.getConfigurationSection("players").getKeys(false).stream().forEach(player -> {
-                    HashMap<String, ArrayList<String>> tempTitles = new HashMap<>();
+                    LinkedHashMap<String, ArrayList<String>> tempTitles = new LinkedHashMap<>();
 
                     config.getConfigurationSection("players." + player + ".categories").getKeys(false).stream().forEach(category -> {
                         tempTitles.put(category, 
@@ -103,15 +104,15 @@ public class FileHandler {
                     return;
                 }
                  
-                HashMap<String, ItemStack> tempCategories = new HashMap<>();
-                HashMap<String, HashMap<String, ItemStack>> tempTitles = new HashMap<>();
+                LinkedHashMap<String, ItemStack> tempCategories = new LinkedHashMap<>();
+                LinkedHashMap<String, LinkedHashMap<String, ItemStack>> tempTitles = new LinkedHashMap<>();
 
                 config.getConfigurationSection("categories").getKeys(false).stream().forEach(category -> {
 
-                    tempCategories.put(category, config.getItemStack("categories." + category +".item"));
-                    tempTitles.put(category, new HashMap<>(
+                    tempCategories.put(category, config.getItemStack("categories." + category + ".item"));
+                    tempTitles.put(category, new LinkedHashMap<>(
                             config.getConfigurationSection("categories." + category + ".titles").getKeys(false).stream().collect(Collectors.toMap(title -> title, 
-                                title -> config.getItemStack("categories." + category + ".titles" + title + ".item")
+                                title -> config.getItemStack("categories." + category + ".titles." + title + ".item")
                         ))));
                 });
 
@@ -144,9 +145,9 @@ public class FileHandler {
                 YamlConfiguration config;
                 try {
                     config = getConfig(file);
-                    HashMap<UUID, HashMap<String, ArrayList<String>>> tempMap;
+                    LinkedHashMap<UUID, HashMap<String, ArrayList<String>>> tempMap;
                     synchronized (players) {
-                        tempMap = new HashMap<>(players);
+                        tempMap = new LinkedHashMap<>(players);
                     }
                     tempMap.entrySet().stream().forEach(entry -> {
                         entry.getValue().entrySet().stream().forEach(e -> {
@@ -175,15 +176,15 @@ public class FileHandler {
                     File file = new File(DankTitles.instance.getDataFolder(), "titles.yml");    
                     YamlConfiguration config = getConfig(file);
                     
-                    HashMap<String, ItemStack> tempCategories;
-                    HashMap<String, HashMap<String, ItemStack>> tempTitles;
+                    LinkedHashMap<String, ItemStack> tempCategories;
+                    LinkedHashMap<String, HashMap<String, ItemStack>> tempTitles;
                     
                     synchronized(categories) {
-                        tempCategories = new HashMap<>(categories);
+                        tempCategories = new LinkedHashMap<>(categories);
                     }
                     
                     synchronized(titles) {
-                        tempTitles = new HashMap<>(titles);
+                        tempTitles = new LinkedHashMap<>(titles);
                     }
                     
                     tempCategories.entrySet().stream().forEach(entry -> {
@@ -226,16 +227,16 @@ public class FileHandler {
         return config;
     }
     
-    public static HashMap<String, ItemStack> getCategories() {
+    public static LinkedHashMap<String, ItemStack> getCategories() {
         return categories;
     }
     
-    public static HashMap<String, ItemStack> getTitles(String type) {
+    public static LinkedHashMap<String, ItemStack> getTitles(String type) {
         return titles.get(type);
     }
     
     
-    public static HashMap<UUID, HashMap<String, ArrayList<String>>> getPlayers() {
+    public static LinkedHashMap<UUID, LinkedHashMap<String, ArrayList<String>>> getPlayers() {
         return players;
     }
     

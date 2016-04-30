@@ -49,7 +49,7 @@ public class HelpSubcommand implements Subcommand, CommandChecker {
         
         // Methods inheritied from CommandChecker
         if (!checkLength(sender, args, 1, 3)) return;
-        if (!checkSender(sender, "customkits.core.help")) return;
+        if (!checkSender(sender, "danktitles.help")) return;
         
         
         LinkedHashMap<String, MutablePair<String, String>> parsedCommands;

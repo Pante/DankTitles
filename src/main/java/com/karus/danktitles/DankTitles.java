@@ -17,7 +17,10 @@
 package com.karus.danktitles;
 
 import com.karus.danktitles.commands.*;
+import com.karus.danktitles.io.FileHandler;
+import com.karus.danktitles.io.Output;
 import com.karus.danktitles.listeners.*;
+import com.karus.danktitles.menus.MenuUtility;
 
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
@@ -36,6 +39,13 @@ public class DankTitles extends JavaPlugin {
     public static Chat chat;
     public static Permission permission;
     
+    private Output<String, Exception> out = (output, exception) -> {
+        if (exception != null) {
+            getLogger().severe(output);
+        } else {
+            getLogger().info(output);
+        }
+    };
     
     // <------ Enable and disable methods ------>
     
@@ -47,6 +57,11 @@ public class DankTitles extends JavaPlugin {
         registerCommands();
         registerListeners();
         
+        FileHandler.loadConfig(out);
+        FileHandler.loadPlayers(out);
+        FileHandler.loadTitles(out);
+        
+        MenuUtility.load();
     }
     
     @Override
@@ -92,11 +107,6 @@ public class DankTitles extends JavaPlugin {
     
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        
-        getServer().getPluginManager().registerEvents(new MenuClose(), this);
-        
-        getServer().getPluginManager().registerEvents(new CategoryMenuListener(), this);
-        getServer().getPluginManager().registerEvents(new TitleMenuListener(), this);
     }
     
 }

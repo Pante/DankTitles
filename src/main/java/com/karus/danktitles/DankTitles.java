@@ -62,11 +62,12 @@ public class DankTitles extends JavaPlugin {
         FileHandler.loadTitles(out);
         
         MenuUtility.load();
+        
     }
     
     @Override
     public void onDisable() {
-        
+
     }
     
     
@@ -92,14 +93,14 @@ public class DankTitles extends JavaPlugin {
         
         MainCommand command = new MainCommand();
         
-        command.registerSubcommand("danktitles about", new AboutSubcommand());
-        command.registerSubcommand("danktitles add", new AddSubcommand());
-        command.registerSubcommand("danktitles help", new HelpSubcommand());
-        command.registerSubcommand("danktitles menu", new MenuSubcommand());
-        command.registerSubcommand("danktitles reload", new ReloadSubcommand());
-        command.registerSubcommand("danktitles remove", new RemoveSubcommand());
-        command.registerSubcommand("danktitles save", new SaveSubcommand());
-        command.registerSubcommand("danktitles set", new SetSubcommand());
+        command.registerSubcommand("about", new AboutSubcommand());
+        command.registerSubcommand("add", new AddSubcommand());
+        command.registerSubcommand("help", new HelpSubcommand());
+        command.registerSubcommand("menu", new MenuSubcommand());
+        command.registerSubcommand("reload", new ReloadSubcommand());
+        command.registerSubcommand("remove", new RemoveSubcommand());
+        command.registerSubcommand("save", new SaveSubcommand());
+        command.registerSubcommand("set", new SetSubcommand());
         
         getCommand("danktitles").setExecutor(command);
         

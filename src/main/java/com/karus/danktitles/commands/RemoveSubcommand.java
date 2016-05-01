@@ -16,7 +16,9 @@
  */
 package com.karus.danktitles.commands;
 
+import com.karus.danktitles.DankTitles;
 import com.karus.danktitles.io.FileHandler;
+import com.karus.danktitles.io.Output;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -58,6 +60,13 @@ public class RemoveSubcommand implements Subcommand, CommandChecker {
             }
         } 
         
+        FileHandler.savePlayers((Output<String, Exception>) (output, exception) -> {
+            if (exception != null) {
+                DankTitles.instance.getLogger().severe(output);
+            } else {
+                DankTitles.instance.getLogger().info(output);
+            }
+        });
         
     }
     

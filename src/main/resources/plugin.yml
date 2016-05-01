@@ -7,67 +7,64 @@ depend: [Vault]
 commands:
 
   danktitles:
+    aliases: [dt, dtitles]
     description: Use this to add titles and whatnot
     usage: /DankTitles [subcommand]
-    aliases: [dt, dtitles]
     permission: danktitles.command
   
-  "danktitles about":
+  about:
+    aliases: [about]
     description: Allows administrators to view the plugin version and information
     usage: /DankTitles about
-    aliases: [about]
-    permisssion: danktitles.about
+    permission: danktitles.about
   
-  "danktitles add":
+  add:
+    aliases: [add, give]
     description: Adds a titles to the player
     usage: /DankTitles add [category] [title] (<name|UUID>)
-    aliases: [add, give]
     permission: danktitles.add
   
-  "danktitles help":
+  help:
+    aliases: [help, h]
     description: Allows players to view the list of commands
     usage: /DankTitles help [(all|subcommand)] [(page number)]
-    aliases: [help, h]
     permission: danktitles.help
     
-  "danktitles menu":
+  menu:
+    aliases: [menu, m]
     description: Opens up the menu for selecting a title
     usage: /DankTitles menu
-    aliases: [menu, m]
     permission: danktitles.menu
     
-  "danktitles reload":
+  reload:
+    aliases: [reload, load]
     description: Reloads the plugin files
     usage: /DankTitles reload [component]
-    aliases: [reload, load]
     permission: danktitles.reload
   
-  "danktitles remove":
+  remove:
+    aliases: [remove, delete, del]
     description: Removes the players title
     usage: /DankTitles remove [category] [title] (<name|UUID>)
-    aliases: [remove, delete, del]
+    permission: danktitles.remove
   
-  "danktitles save":
+  save:
+    aliases: [save]
     description: Saves the plugin data to files
     usage: /DankTitles save [component]
-    aliases: [save]
     permission: danktitles.save
   
-  "danktitles set":
+  set:
+    aliases: [set]
     description: Sets the specified player's title
     usage: /DankTitles set (category) (title) (<name|UUID>)
-    aliases: [set]
     permission: danktitles.set
-    
-
   
 permissions:
   danktitles.*:
     description: Gives access to all DankTitles commands.
-    default: false
-    childeren:
+    children:
       danktitles.command: true
-      
       danktitles.about: true
       danktitles.add: true
       danktitles.help: true
@@ -78,8 +75,7 @@ permissions:
       danktitles.set: true
      
   danktitles.command:
-    default: true
-    
+    default: false
     
   danktitles.about:
     default: false
@@ -92,6 +88,7 @@ permissions:
     
   danktitles.menu:  
     default: false
+    
   danktitles.reload:
     default: false
     

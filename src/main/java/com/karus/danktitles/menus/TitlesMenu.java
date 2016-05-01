@@ -57,6 +57,9 @@ public class TitlesMenu implements Menu, Listener {
         
         if (MenuUtility.DynamicSizeEnabled()) {
             pageSize = MenuUtility.generateSize(FileHandler.getTitles(category).size(), page);
+            if (pageSize <= 9) {
+                pageSize += 9;
+            }
         } else {
             pageSize = MenuUtility.getStaticSize();
         }
@@ -151,8 +154,8 @@ public class TitlesMenu implements Menu, Listener {
         
         else if (clicked.equals(MenuUtility.getIcon("reset"))) {
             DankTitles.chat.setPlayerPrefix(player, DankTitles.chat.getGroupPrefix(player.getWorld(), DankTitles.permission.getPrimaryGroup(player)));
-            player.sendMessage(ChatColor.GOLD + "Your title has been reset to your group default!");
             player.closeInventory();
+            player.sendMessage(ChatColor.GOLD + "Your title has been reset to your group default!");
         }
         
         else if (clicked.equals(MenuUtility.getIcon("menu"))) {
@@ -161,8 +164,8 @@ public class TitlesMenu implements Menu, Listener {
         
         else {
             DankTitles.chat.setPlayerPrefix(player, clicked.getItemMeta().getDisplayName() + " ");
-            player.sendMessage(ChatColor.GOLD + "Your title has been changed to: " + ChatColor.RESET + clicked.getItemMeta().getDisplayName());
             player.closeInventory();
+            player.sendMessage(ChatColor.GOLD + "Your title has been changed to: " + ChatColor.RESET + clicked.getItemMeta().getDisplayName());
         }
         
         

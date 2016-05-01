@@ -52,10 +52,10 @@ public class MenuUtility {
     
     public static int generateSize(int total, int page) {
         
-        int t = total - (page * 54);
+        int t = total - ((page - 1) * 54);
         if (t <= 0) return 54;
         
-        return Math.min((int) (Math.ceil(((double) total / 9.0 )) * 9.0), 54);
+        return Math.min((int) (Math.ceil(((double) t / 9.0 )) * 9.0), 54);
     }
     
     

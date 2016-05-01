@@ -13,11 +13,11 @@ icons:
       damage: 5
       amount: 1
       meta:
-      ==: ItemMeta
-      meta-type: UNSPECIFIC
-      display-name: §2Previous Page
-      lore:
-      - Takes you back to the previous page
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: §2Previous Page
+        lore:
+        - Takes you back to the previous page
       
   next:
     item:
@@ -26,11 +26,11 @@ icons:
       damage: 5
       amount: 1
       meta:
-      ==: ItemMeta
-      meta-type: UNSPECIFIC
-      display-name: §2Next Page
-      lore:
-      - Takes you to the next page
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: §2Next Page
+        lore:
+        - Takes you to the next page
       
   reset:
     item:
@@ -38,19 +38,19 @@ icons:
       type: ANVIL
       amount: 1
       meta:
-      ==: ItemMeta
-      meta-type: UNSPECIFIC
-      display-name: §4Reset Title
-      lore:
-      - Resets your title back to the group 
-      - default
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: §4Reset Title
+        lore:
+        - Resets your title back to the group 
+        - default
       
   menu:
     item:
-        ==: org.bukkit.inventory.ItemStack
-        type: EYE_OF_ENDER
-        amount: 1
-        meta:
+      ==: org.bukkit.inventory.ItemStack
+      type: EYE_OF_ENDER
+      amount: 1
+      meta:
         ==: ItemMeta
         meta-type: UNSPECIFIC
         display-name: §2Main Menu
